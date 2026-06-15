@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# KWC Contract Generator
 
-## Getting Started
+Live: [kwc-contract-generator.vercel.app](https://kwc-contract-generator.vercel.app)
 
-First, run the development server:
+Contractgenerator voor Galerie de Kunst van Kunst — opslaan, ondertekenen op iPad, klantlink en voorbereide incassomodule.
+
+## Functies
+
+- **Generator** (`/`) — formulier, live preview, print/PDF
+- **Contracten** (`/contracten`) — overzicht met statusfilter
+- **Detail** (`/contracten/[id]`) — tekenlink, downloadlink, e-mail, incasso
+- **Tekenen** (`/tekenen/[token]`) — iPad-handtekening (publiek, geen login)
+- **Download** (`/download/[token]`) — klant bekijkt getekend contract + PDF
+
+### Statusflow
+
+`CONCEPT` → `KLAAR_VOOR_ONDERTEKENING` → `GETEKEND` → `KLANTLINK_VERZONDEN` → `INCASSO_VOORBEREID` → `AFGEROND`
+
+Tekenen is alleen mogelijk bij status **klaar voor ondertekening**.
+
+## Omgevingsvariabelen
+
+Kopieer `.env.example` naar `.env.local`:
+
+| Variabele | Verplicht | Beschrijving |
+|---|---|---|
+| `DATABASE_URL` | Ja (productie) | PostgreSQL connection string |
+| `BLOB_READ_WRITE_TOKEN` | Ja (tekenen) | Vercel Blob voor handtekeningen + PDF |
+| `NEXT_PUBLIC_APP_URL` | Ja (productie) | Basis-URL voor klantlinks |
+| `ADMIN_PASSWORD` | Aanbevolen | Wachtwoord voor admin-toegang |
+| `AUTH_SECRET` | Optioneel | Extra secret voor sessiecookies |
+
+Zonder `ADMIN_PASSWORD` is de app open (alleen voor lokaal testen).
+
+## Lokaal draaien
 
 ```bash
+npm install
+cp .env.example .env.local
+# Vul variabelen in
+npm run db:migrate
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Vercel-deploy
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Koppel **Vercel Postgres** (of Neon) → `DATABASE_URL`
+2. Maak **Vercel Blob** store → `BLOB_READ_WRITE_TOKEN`
+3. Zet `NEXT_PUBLIC_APP_URL=https://kwc-contract-generator.vercel.app`
+4. Zet `ADMIN_PASSWORD` (sterk wachtwoord)
+5. Optioneel: `AUTH_SECRET` (willekeurige string)
+6. Deploy — migratie draait automatisch via `vercel.json` buildCommand
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npx prisma migrate deploy   # handmatig indien nodig
+```
 
-## Learn More
+## Stack
 
-To learn more about Next.js, take a look at the following resources:
+- Next.js 16, TypeScript, Tailwind CSS 4
+- Prisma + PostgreSQL
+- Vercel Blob (handtekeningen + definitieve PDF)
+- jspdf + html2canvas (PDF-generatie na ondertekening)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Nog niet actief
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Live e-mail (Resend/SendGrid) — nu mailto-placeholder
+- Mollie/iDEAL/Wero — incassomodule voorbereid, geen live betaling
 
-## Deploy on Vercel
+## Beveiliging
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Admin-routes (`/`, `/contracten`, API) vereisen login als `ADMIN_PASSWORD` is gezet
+- Publiek: `/tekenen/[token]`, `/download/[token]` en bijbehorende API's
+- Klantlinks gebruiken unieke tokens (geen UUID's)

@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ContractStatus {
+  CONCEPT
+  KLAAR_VOOR_ONDERTEKENING
+  GETEKEND
+  KLANTLINK_VERZONDEN
+  INCASSO_VOORBEREID
+  AFGEROND
+}
+
+model ContractTemplate {
+  id               String     @id @default(uuid())
+  slug             String     @unique
+  name             String
+  description      String?
+  fileUrl          String?
+  fileName         String?
+  isBuiltIn        Boolean    @default(false)
+  baseTemplateSlug String     @default("sjabloon-1")
+  defaultFormData  Json?
+  documentContent  Json?
+  sortOrder        Int        @default(0)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  contracts        Contract[]
+}
+
+model Contract {
+  id                  String         @id @default(uuid())
+  contractNumber      String         @unique
+  status              ContractStatus @default(CONCEPT)
+  formData            Json
+  locked              Boolean        @default(false)
+  templateId          String?
+  template            ContractTemplate? @relation(fields: [templateId], references: [id])
+
+  customerToken       String         @unique @default(uuid())
+
+  signatureUrl        String?
+  signerName          String?
+  signerEmail         String?
+  signedAt            DateTime?
+  signerIp            String?
+  signerUserAgent     String?
+
+  pdfUrl              String?
+
+  incassoAcknowledged Boolean        @default(false)
+  incassoPreparedAt   DateTime?
+
+  emailSentAt         DateTime?
+
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+}

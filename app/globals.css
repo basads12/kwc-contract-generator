@@ -1,26 +1,752 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #f4f4f5;
+  --foreground: #18181b;
+  --font-sans: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  --contract-text: #000;
+  --contract-muted: #4b5563;
+  --contract-border: #d1d5db;
+  --contract-margin: 25mm;
+  --contract-line: 1.2;
+  --contract-line-tight: 1.17;
+  --contract-number-col: 1.45rem;
+  --contract-dash-col: 0.65rem;
+  --contract-space-xs: 0.18rem;
+  --contract-space-sm: 0.3rem;
+  --contract-space-md: 0.42rem;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.contract-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  padding: 1.25rem 1rem 2rem;
+  background: #e4e4e7;
+  overflow-x: hidden;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+}
+
+.contract-preview__viewport {
+  margin: 0 auto;
+  max-width: 100%;
+  width: 100%;
+}
+
+.contract-preview__content {
+  max-width: 100%;
+}
+
+.contract-preview--scaled {
+  align-items: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.contract-preview--scaled .contract-preview__viewport {
+  overflow: visible;
+  flex-shrink: 0;
+}
+
+.contract-preview__content--scaled {
+  transform-origin: top left;
+  margin: 0;
+}
+
+@media screen and (max-width: 840px) {
+  :root {
+    --contract-margin: 15mm;
+  }
+
+  .contract-preview {
+    padding: 0.5rem 0 1rem;
+  }
+
+  .contract-preview--scaled .contract-pages {
+    width: 210mm;
+    max-width: 210mm;
+  }
+
+  .contract-preview--scaled .a4-page {
+    width: 210mm;
+    max-width: 210mm;
+    min-width: 210mm;
+    padding: 15mm;
+  }
+
+  .contract-main-page-header {
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .contract-recipient__row {
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .contract-sender__name {
+    white-space: normal;
+  }
+}
+
+.contract-amount {
+  white-space: nowrap;
+}
+
+.contract-pages {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 210mm;
+  min-width: 0;
+}
+
+.a4-page--sjabloon1-main {
+  --contract-number-col: 1rem;
+  --contract-line: 1.15;
+  --contract-space-sm: 0.5rem;
+  --contract-space-md: 0.65rem;
+  padding: 20mm 22mm 18mm;
+  line-height: var(--contract-line);
+}
+
+.a4-page--sjabloon1-main .contract-intro {
+  margin-bottom: 0.75rem;
+  line-height: 1.2;
+}
+
+.a4-page--sjabloon1-main .contract-intro--classic {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.08em;
+}
+
+.a4-page--sjabloon1-main .contract-article {
+  column-gap: 1.05rem;
+  margin-bottom: 0.75rem;
+}
+
+.a4-page--sjabloon1-main .contract-article__body,
+.a4-page--sjabloon1-main .contract-article-continued {
+  line-height: 1.2;
+}
+
+.a4-page--sjabloon1-main .contract-article-continued {
+  padding-left: calc(var(--contract-number-col) + 1.05rem);
+  margin-bottom: 0.75rem;
+}
+
+.a4-page--sjabloon1-main .signature-block--main {
+  padding-top: 0.55rem;
+}
+
+.contract-article__title {
+  font-weight: 700;
+}
+
+/* Word-bron: Helvetica 10pt, enkele regelafstand, marges 2,5 cm */
+.a4-page {
+  width: 100%;
+  max-width: 210mm;
+  min-height: 297mm;
+  box-sizing: border-box;
+  font-family: var(--font-sans);
+  font-size: 10pt;
+  line-height: var(--contract-line);
+  background: white;
+  color: var(--contract-text);
+  padding: var(--contract-margin);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.06),
+    0 2px 10px rgba(0, 0, 0, 0.07);
+  text-align: left;
+  overflow: visible;
+}
+
+.a4-page--flex {
+  display: flex;
+  flex-direction: column;
+}
+
+.a4-page--bijlage1,
+.a4-page--bijlage2,
+.a4-page--bijlage3 {
+  font-size: 9.5pt;
+  line-height: var(--contract-line-tight);
+}
+
+.a4-page--bijlage1 .contract-heading1,
+.a4-page--bijlage2 .contract-heading1,
+.a4-page--bijlage3 .contract-heading1 {
+  margin-bottom: var(--contract-space-xs);
+  font-size: 12.5pt;
+}
+
+.a4-page--bijlage1 .contract-heading2,
+.a4-page--bijlage2 .contract-heading2,
+.a4-page--bijlage3 .contract-heading2 {
+  margin-bottom: var(--contract-space-sm);
+  font-size: 10.5pt;
+}
+
+.a4-page--bijlage1 .contract-paragraph,
+.a4-page--bijlage2 .contract-paragraph,
+.a4-page--bijlage3 .contract-paragraph {
+  margin-bottom: var(--contract-space-xs);
+}
+
+.a4-page--bijlage1 .contract-dash-item,
+.a4-page--bijlage2 .contract-dash-item,
+.a4-page--bijlage3 .contract-dash-item {
+  margin-bottom: 0.14rem;
+}
+
+.a4-page--bijlage1 .contract-section-label,
+.a4-page--bijlage2 .contract-section-label,
+.a4-page--bijlage3 .contract-section-label {
+  margin: var(--contract-space-sm) 0 var(--contract-space-xs);
+  font-size: 9.5pt;
+}
+
+.a4-page--bijlage1 .signature-block--bijlage,
+.a4-page--bijlage2 .signature-block--bijlage,
+.a4-page--bijlage3 .signature-block--bijlage {
+  padding-top: var(--contract-space-sm);
+}
+
+.a4-page--bijlage1 .signature-date,
+.a4-page--bijlage2 .signature-date,
+.a4-page--bijlage3 .signature-date {
+  margin-bottom: var(--contract-space-sm);
+}
+
+.a4-page--bijlage1 .signature-table__sign-row td,
+.a4-page--bijlage2 .signature-table__sign-row td,
+.a4-page--bijlage3 .signature-table__sign-row td {
+  height: 7mm;
+}
+
+.contract-main-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin: 0 0 var(--contract-space-md);
+  padding-bottom: var(--contract-space-xs);
+  border-bottom: 1px solid var(--contract-border);
+}
+
+.contract-main-page-header__title {
+  margin: 0;
+  font-size: 13pt;
+  letter-spacing: -0.01em;
+}
+
+.contract-main-page-header__page {
+  margin: 0;
+  font-size: 8.5pt;
+  color: var(--contract-muted);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.contract-heading1 {
+  margin: 0 0 var(--contract-space-sm);
+  font-size: 13pt;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+}
+
+.contract-heading2 {
+  margin: 0 0 var(--contract-space-sm);
+  font-size: 10.5pt;
+  font-weight: 700;
+  line-height: 1.12;
+}
+
+.contract-sender {
+  margin-bottom: 0;
+  padding-bottom: var(--contract-space-sm);
+  border-bottom: 1px solid var(--contract-border);
+}
+
+.contract-sender__name {
+  margin: 0;
+  font-weight: 700;
+  font-size: 10pt;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.contract-sender__address {
+  margin: 0.08rem 0 0;
+  color: var(--contract-muted);
+  font-size: 8.5pt;
+  line-height: 1.15;
+}
+
+.contract-recipient {
+  margin: var(--contract-space-md) 0 var(--contract-space-sm);
+}
+
+.contract-recipient p {
+  margin: 0;
+  line-height: 1.18;
+}
+
+.contract-recipient__company {
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.18;
+}
+
+.contract-recipient__attn {
+  margin: 0;
+  line-height: 1.18;
+}
+
+.contract-recipient__attn-name {
+  white-space: nowrap;
+}
+
+.contract-recipient__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 0.06rem;
+}
+
+.contract-recipient__date {
+  color: var(--contract-muted);
+  font-size: 9.5pt;
+  white-space: nowrap;
+}
+
+.contract-title {
+  margin: 0 0 var(--contract-space-sm);
+  font-size: 13pt;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.contract-subtitle {
+  margin: 0 0 var(--contract-space-sm);
+  font-size: 10pt;
+  font-style: italic;
+  line-height: 1.15;
+}
+
+.contract-intro {
+  margin: 0 0 var(--contract-space-md);
+  line-height: var(--contract-line);
+  overflow-wrap: break-word;
+}
+
+.contract-article {
+  display: grid;
+  grid-template-columns: var(--contract-number-col) minmax(0, 1fr);
+  column-gap: 0.28rem;
+  margin: 0 0 var(--contract-space-sm);
+  align-items: start;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.contract-article__number {
+  grid-column: 1;
+  margin: 0;
+  padding: 0;
+  font-weight: 400;
+  line-height: var(--contract-line);
+}
+
+.contract-article__body {
+  grid-column: 2;
+  min-width: 0;
+  margin: 0;
+  line-height: var(--contract-line);
+  overflow-wrap: break-word;
+}
+
+.contract-article-continued {
+  margin: 0 0 var(--contract-space-sm);
+  padding-left: calc(var(--contract-number-col) + 0.28rem);
+  line-height: var(--contract-line);
+}
+
+.contract-bijlage-clause {
+  display: grid;
+  grid-template-columns: 1.65rem minmax(0, 1fr);
+  column-gap: 0.35rem;
+  margin: 0 0 var(--contract-space-md);
+  align-items: start;
+}
+
+.contract-bijlage-clause__number {
+  grid-column: 1;
+  margin: 0;
+  font-weight: 700;
+  line-height: var(--contract-line);
+}
+
+.contract-bijlage-clause__body {
+  grid-column: 2;
+  min-width: 0;
+  margin: 0;
+  line-height: var(--contract-line);
+  overflow-wrap: break-word;
+}
+
+.contract-dash-item {
+  display: grid;
+  grid-template-columns: var(--contract-dash-col) minmax(0, 1fr);
+  column-gap: 0.28rem;
+  margin: 0 0 0.2rem;
+  align-items: start;
+}
+
+.contract-dash-item__marker {
+  grid-column: 1;
+  line-height: var(--contract-line);
+}
+
+.contract-dash-item__body {
+  grid-column: 2;
+  min-width: 0;
+  margin: 0;
+  line-height: var(--contract-line);
+}
+
+.contract-dash-item--nested {
+  margin-left: calc(var(--contract-dash-col) + 0.28rem);
+}
+
+.contract-dash-list {
+  margin: 0.06rem 0 0.06rem calc(var(--contract-dash-col) + 0.28rem);
+  padding: 0;
+  list-style: none;
+}
+
+.contract-dash-list li {
+  display: grid;
+  grid-template-columns: var(--contract-dash-col) minmax(0, 1fr);
+  column-gap: 0.28rem;
+  margin: 0 0 0.2rem;
+  line-height: var(--contract-line);
+}
+
+.contract-dash-list li::before {
+  content: "–";
+  grid-column: 1;
+}
+
+.contract-paragraph {
+  margin: 0 0 var(--contract-space-sm);
+  line-height: var(--contract-line);
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.contract-bijlage-subtitle {
+  margin: 0 0 var(--contract-space-sm);
+  line-height: 1.1;
+}
+
+.contract-section-label {
+  margin: var(--contract-space-md) 0 var(--contract-space-xs);
+  font-weight: 700;
+  line-height: 1.15;
+  font-size: 9.5pt;
+}
+
+.signature-block {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  margin-top: var(--contract-space-md);
+}
+
+.signature-block--main,
+.signature-block--bijlage {
+  margin-top: auto;
+  padding-top: var(--contract-space-md);
+}
+
+.signature-date {
+  margin: 0 0 var(--contract-space-sm);
+  line-height: 1.1;
+  font-size: 9.5pt;
+}
+
+.signature-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.signature-table td {
+  width: 33.33%;
+  vertical-align: top;
+  padding: 0 0.45rem 0 0;
+  text-align: left;
+}
+
+.signature-table td:first-child {
+  padding-left: 0;
+}
+
+.signature-table td:last-child {
+  padding-right: 0;
+}
+
+.signature-table__party-row td {
+  padding-bottom: 0.08rem;
+}
+
+.signature-table__name-row td {
+  padding-bottom: 0;
+}
+
+.signature-table__sign-row td {
+  height: 8mm;
+  vertical-align: bottom;
+  padding: 0 0.45rem 0 0;
+}
+
+.signature-table__line-row td {
+  padding: 0 0.45rem 0.08rem 0;
+  vertical-align: top;
+}
+
+.signature-table__label-row td {
+  padding-top: 0.08rem;
+}
+
+.signature-party {
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.15;
+  font-size: 9pt;
+  white-space: nowrap;
+}
+
+.signature-name {
+  margin: 0;
+  line-height: 1.15;
+  font-size: 9pt;
+}
+
+.signature-line {
+  margin: 0;
+  border-top: 1px solid #000;
+}
+
+.signature-label {
+  margin: 0;
+  line-height: 1;
+  font-size: 7.5pt;
+  color: #6b7280;
+}
+
+.signature-image {
+  display: block;
+  max-height: 8mm;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: left bottom;
+}
+
+.adres-columns-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 var(--contract-space-md);
+  font-size: 7.25pt;
+  line-height: 1.12;
+  table-layout: fixed;
+}
+
+.adres-columns-table .col-aanhef { width: 9%; }
+.adres-columns-table .col-naam { width: 11%; }
+.adres-columns-table .col-adres { width: 13%; }
+.adres-columns-table .col-huisnummer { width: 8%; }
+.adres-columns-table .col-postcode { width: 9%; }
+.adres-columns-table .col-woonplaats { width: 12%; }
+.adres-columns-table .col-email { width: 15%; }
+.adres-columns-table .col-telefoon { width: 23%; }
+
+.adres-columns-table th,
+.adres-columns-table td {
+  border: 1px solid #bdbdbd;
+  padding: 0.1rem 0.16rem;
+  font-weight: 400;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.adres-columns-table th {
+  font-weight: 700;
+  white-space: nowrap;
+  word-break: keep-all;
+  overflow-wrap: normal;
+}
+
+.adres-columns-table__phone {
+  white-space: nowrap;
+  font-size: 6.8pt;
+  letter-spacing: -0.02em;
+  padding-left: 0.1rem;
+  padding-right: 0.1rem;
+}
+
+.adres-columns-table td {
+  word-break: break-word;
+}
+
+.adres-columns-table tbody td {
+  height: 6.5mm;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.adres-contact-row {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr);
+  column-gap: 0.5rem;
+  align-items: end;
+  margin: 0 0 0.3rem;
+}
+
+.adres-contact-row__label {
+  line-height: 1.15;
+  font-size: 9.5pt;
+}
+
+.adres-contact-row__line {
+  min-height: 4.25mm;
+  border-bottom: 1px solid #000;
+  line-height: 1.15;
+  padding-bottom: 0.06rem;
+}
+
+.contract-form-section {
+  margin: 0 0 1.25rem;
+  border: 0;
+  padding: 0;
+}
+
+.contract-form-section__title {
+  display: block;
+  width: 100%;
+  margin: 0 0 0.75rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid #e4e4e7;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #27272a;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 25mm;
+  }
+
+  html,
+  body {
+    background: white !important;
+    color: #000 !important;
+    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .contract-preview {
+    display: block !important;
+    width: 100% !important;
+    overflow: visible !important;
+    background: white !important;
+    padding: 0 !important;
+  }
+
+  .contract-preview__viewport,
+  .contract-preview__content {
+    width: auto !important;
+    height: auto !important;
+    transform: none !important;
+    margin: 0 !important;
+    max-width: none !important;
+  }
+
+  .contract-pages {
+    gap: 0;
+    max-width: none;
+  }
+
+  .a4-page {
+    width: auto;
+    min-height: 0;
+    height: auto;
+    padding: 0;
+    box-shadow: none !important;
+    margin: 0;
+    font-size: 10pt;
+    line-height: var(--contract-line);
+    page-break-after: always;
+    break-after: page;
+    overflow: visible;
+  }
+
+  .a4-page:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+
+  .contract-article,
+  .contract-dash-item,
+  .contract-article__number,
+  .contract-dash-item__marker {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .contract-article__number,
+  .contract-dash-item__marker {
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .a4-page--bijlage1,
+  .a4-page--bijlage2,
+  .a4-page--bijlage3 {
+    font-size: 9.5pt;
+    line-height: var(--contract-line-tight);
+  }
+
+  .adres-columns-table th {
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+  }
+
+  .adres-columns-table__phone {
+    white-space: nowrap !important;
+    font-size: 6.5pt;
+  }
 }

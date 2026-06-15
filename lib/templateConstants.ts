@@ -1,0 +1,5 @@
+export const SIJABLOON_1_ID = "00000000-0000-4000-8000-000000000001";
+export const SIJABLOON_1_SLUG = "sjabloon-1";
+
+export const SIJABLOON_2_ID = "00000000-0000-4000-8000-000000000002";
+export const SIJABLOON_2_SLUG = "sjabloon-2";
