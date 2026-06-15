@@ -21,6 +21,8 @@ interface ContractPreviewProps {
   calculations: ContractCalculations;
   signatureImageUrl?: string | null;
   signedByName?: string | null;
+  editable?: boolean;
+  onDocumentContentChange?: (content: import("@/lib/documentContent").DocumentContent) => void;
 }
 
 function getAvailableWidth(container: HTMLElement | null): number {
@@ -55,6 +57,8 @@ export default function ContractPreview({
   calculations,
   signatureImageUrl,
   signedByName,
+  editable = false,
+  onDocumentContentChange,
 }: ContractPreviewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -119,10 +123,6 @@ export default function ContractPreview({
     data.templateSlug,
     data.baseTemplateSlug
   );
-  const DocumentComponent =
-    baseSlug === SIJABLOON_2_SLUG
-      ? ContractDocumentSjabloon2
-      : ContractDocument;
 
   const { scale, height } = layout;
   const isScaled = scale < 0.999;
@@ -136,6 +136,11 @@ export default function ContractPreview({
       ref={containerRef}
       style={{ "--contract-view-scale": scale } as CSSProperties}
     >
+      {editable ? (
+        <p className="no-print contract-preview__edit-hint">
+          Klik op de contracttekst om die direct aan te passen.
+        </p>
+      ) : null}
       <div
         className="contract-preview__viewport"
         style={
@@ -162,12 +167,23 @@ export default function ContractPreview({
               : undefined
           }
         >
-          <DocumentComponent
-            data={data}
-            calculations={calculations}
-            signatureImageUrl={signatureImageUrl}
-            signedByName={signedByName}
-          />
+          {baseSlug === SIJABLOON_2_SLUG ? (
+            <ContractDocumentSjabloon2
+              data={data}
+              calculations={calculations}
+              signatureImageUrl={signatureImageUrl}
+              signedByName={signedByName}
+            />
+          ) : (
+            <ContractDocument
+              data={data}
+              calculations={calculations}
+              signatureImageUrl={signatureImageUrl}
+              signedByName={signedByName}
+              editable={editable}
+              onDocumentContentChange={onDocumentContentChange}
+            />
+          )}
         </div>
       </div>
     </div>

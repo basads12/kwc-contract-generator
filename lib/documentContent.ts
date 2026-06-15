@@ -6,10 +6,13 @@ export interface DocumentArticleContent {
 }
 
 export interface DocumentContent {
+  fullText?: string;
   intro?: string;
   articles: Record<string, DocumentArticleContent>;
   continued?: string[];
 }
+
+const PAGE_BREAK_MARKER = "[pagina 2]";
 
 export const DOCUMENT_PLACEHOLDER_HELP = [
   "{{bestedingsgrens}}",
@@ -33,7 +36,7 @@ export const DOCUMENT_PLACEHOLDER_HELP = [
 
 export const SIJABLOON_1_DOCUMENT_CONTENT: DocumentContent = {
   intro:
-    'Hierbij treft u onze overeenkomst aan inzake het concept Kunst-Waardecheques (hierna te noemen "KWC").',
+    "Hierbij treft u onze overeenkomst aan inzake het concept Kunst-Waardecheques (hierna te noemen \u201cKWC\u201d). Wij hebben deze overeenkomst bewust helder en evenwichtig opgesteld. De actie wordt voor u kosteloos en zonder risico uitgevoerd: de organisatie, de kosten en de afhandeling van eventuele klachten nemen wij volledig voor onze rekening, en gedurende de proefperiode kunt u eenvoudig en zonder kosten terug. Onderstaande afspraken leggen vast hoe wij dit zorgvuldig en met respect voor uw klanten en hun gegevens voor u verzorgen.",
   articles: {
     "1": {
       body: "U verstrekt aan iedere klant met een besteding boven de {{bestedingsgrens}} een KWC ter waarde van {{waardeKwc}}. Deze KWC kan worden ingewisseld bij Galerie De Kunst van Kunst.",
@@ -88,6 +91,114 @@ export const SIJABLOON_1_DOCUMENT_CONTENT: DocumentContent = {
   ],
 };
 
+function formatArticleLine(number: number, article: DocumentArticleContent): string {
+  const prefix = article.title ? `${number}. ${article.title} ` : `${number}. `;
+  return `${prefix}${article.body}`.trim();
+}
+
+function parseNumberedBlocks(text: string): Record<string, DocumentArticleContent> {
+  const articles: Record<string, DocumentArticleContent> = {};
+  const regex = /^(\d+)\.\s*([\s\S]*?)(?=^\d+\.\s+|$)/gm;
+  let match = regex.exec(text);
+  while (match) {
+    articles[match[1]] = { body: match[2].trim() };
+    match = regex.exec(text);
+  }
+  return articles;
+}
+
+export function serializeDocumentToFullText(content: DocumentContent): string {
+  if (content.fullText?.trim()) return content.fullText;
+
+  const parts: string[] = [];
+  if (content.intro?.trim()) parts.push(content.intro.trim());
+
+  const numbers = Object.keys(content.articles)
+    .map(Number)
+    .sort((a, b) => a - b);
+
+  for (const number of numbers.filter((value) => value <= 6)) {
+    const article = content.articles[String(number)];
+    if (article) parts.push(formatArticleLine(number, article));
+  }
+
+  parts.push(PAGE_BREAK_MARKER);
+
+  for (const paragraph of content.continued ?? []) {
+    if (paragraph.trim()) parts.push(paragraph.trim());
+  }
+
+  for (const number of numbers.filter((value) => value >= 7)) {
+    const article = content.articles[String(number)];
+    if (article) parts.push(formatArticleLine(number, article));
+  }
+
+  return parts.join("\n\n");
+}
+
+export function parseFullTextToStructured(
+  fullText: string
+): Pick<DocumentContent, "intro" | "articles" | "continued"> {
+  const [page1 = "", page2 = ""] = fullText.split(/\[pagina\s*2\]/i);
+  const introMatch = page1.match(/^([\s\S]*?)(?=^1\.\s+)/m);
+  const intro = introMatch ? introMatch[1].trim() : page1.trim();
+  const page1Articles = parseNumberedBlocks(
+    introMatch ? page1.slice(introMatch[0].length) : page1
+  );
+
+  const firstArticleOnPage2 = page2.match(/^(\d+)\.\s+/m);
+  let continued: string[] = [];
+  let page2Articles: Record<string, DocumentArticleContent> = {};
+
+  if (firstArticleOnPage2) {
+    const splitIndex = page2.indexOf(firstArticleOnPage2[0]);
+    continued = page2
+      .slice(0, splitIndex)
+      .split(/\n\s*\n/)
+      .map((paragraph) => paragraph.trim())
+      .filter(Boolean);
+    page2Articles = parseNumberedBlocks(page2.slice(splitIndex));
+  } else if (page2.trim()) {
+    continued = page2
+      .split(/\n\s*\n/)
+      .map((paragraph) => paragraph.trim())
+      .filter(Boolean);
+  }
+
+  return {
+    intro: intro || undefined,
+    articles: { ...page1Articles, ...page2Articles },
+    continued: continued.length > 0 ? continued : undefined,
+  };
+}
+
+export function resolveDocumentContent(
+  content?: DocumentContent | null
+): DocumentContent {
+  const defaults = structuredClone(SIJABLOON_1_DOCUMENT_CONTENT);
+  if (!content) return defaults;
+
+  return {
+    intro: content.intro ?? defaults.intro,
+    articles: { ...defaults.articles, ...content.articles },
+    continued: content.continued ?? defaults.continued,
+  };
+}
+
+export function updateDocumentFullText(
+  current: DocumentContent,
+  fullText: string
+): DocumentContent {
+  const parsed = parseFullTextToStructured(fullText);
+  return {
+    ...current,
+    fullText,
+    intro: parsed.intro,
+    articles: parsed.articles,
+    continued: parsed.continued,
+  };
+}
+
 export function getDefaultDocumentContent(
   templateSlug: string
 ): DocumentContent | undefined {
@@ -106,6 +217,7 @@ export function mergeDocumentContent(
   if (!override) return structuredClone(base);
 
   const merged: DocumentContent = {
+    fullText: override.fullText ?? base.fullText,
     intro: override.intro ?? base.intro,
     articles: { ...base.articles },
     continued: override.continued ?? base.continued,
@@ -124,6 +236,16 @@ export function mergeDocumentContent(
 export function parseDocumentContent(data: unknown): DocumentContent | undefined {
   if (!data || typeof data !== "object") return undefined;
   const value = data as DocumentContent;
+
+  if (typeof value.fullText === "string" && value.fullText.trim()) {
+    const parsed = parseFullTextToStructured(value.fullText);
+    return {
+      intro: parsed.intro,
+      articles: parsed.articles,
+      continued: parsed.continued,
+    };
+  }
+
   if (!value.articles || typeof value.articles !== "object") return undefined;
   return structuredClone(value);
 }

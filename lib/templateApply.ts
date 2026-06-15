@@ -2,6 +2,7 @@ import {
   getDefaultDocumentContent,
   mergeDocumentContent,
   parseDocumentContent,
+  resolveDocumentContent,
   type DocumentContent,
 } from "./documentContent";
 import { getDefaultValues, getEmptyValues } from "./defaultValues";
@@ -45,10 +46,12 @@ export function applyTemplateRecord(
     ...storedDefaults,
     templateSlug: template.slug,
     baseTemplateSlug: baseSlug,
-    documentContent: mergeDocumentContent(
-      getDefaultDocumentContent(baseSlug),
-      parseDocumentContent(template.documentContent) ??
-        storedDefaults.documentContent
+    documentContent: resolveDocumentContent(
+      mergeDocumentContent(
+        getDefaultDocumentContent(baseSlug),
+        parseDocumentContent(template.documentContent) ??
+          storedDefaults.documentContent
+      )
     ),
   };
 
@@ -105,14 +108,28 @@ export function buildTemplateSavePayload(
 export function ensureDocumentContent(
   data: ContractFormData
 ): ContractFormData {
-  if (data.documentContent) return data;
   const baseSlug = resolveBaseTemplateSlug(data.templateSlug, data.baseTemplateSlug);
   const defaults = getDefaultDocumentContent(baseSlug);
   if (!defaults) return data;
+
+  if (!data.documentContent) {
+    return {
+      ...data,
+      baseTemplateSlug: baseSlug,
+      documentContent: structuredClone(defaults),
+    };
+  }
+
+  const { fullText: _ignored, ...stored } = data.documentContent;
+
   return {
     ...data,
     baseTemplateSlug: baseSlug,
-    documentContent: structuredClone(defaults),
+    documentContent: resolveDocumentContent({
+      ...defaults,
+      ...stored,
+      articles: { ...defaults.articles, ...stored.articles },
+    }),
   };
 }
 

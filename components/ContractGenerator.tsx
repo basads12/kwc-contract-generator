@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import ContractForm from "@/components/ContractForm";
 import ContractPreview from "@/components/ContractPreview";
-import DocumentEditor from "@/components/DocumentEditor";
 import SaveTemplateModal from "@/components/SaveTemplateModal";
 import { calculateContractValues } from "@/lib/calculations";
 import TemplateSelector from "@/components/TemplateSelector";
@@ -205,7 +204,6 @@ export default function ContractGenerator({
                 }}
                 onMessage={setMessage}
               />
-              <DocumentEditor data={data} onChange={setData} />
               <ContractForm key={formKey} data={data} onChange={setData} />
             </div>
           </aside>
@@ -214,7 +212,14 @@ export default function ContractGenerator({
         <main
           className={`min-w-0 w-full ${isEditable ? "lg:w-[70%]" : ""} bg-zinc-200/70`}
         >
-          <ContractPreview data={data} calculations={calculations} />
+          <ContractPreview
+            data={data}
+            calculations={calculations}
+            editable={isEditable}
+            onDocumentContentChange={(documentContent) =>
+              setData((current) => ({ ...current, documentContent }))
+            }
+          />
         </main>
       </div>
     </div>

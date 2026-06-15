@@ -30,15 +30,22 @@ export function CurrencyArt7Monthly({ amount }: { amount: number }) {
 export function MainContractPageHeader({
   page,
   total,
+  subtitle,
 }: {
   page: number;
   total: number;
+  subtitle?: string;
 }) {
   return (
     <div className="contract-main-page-header">
-      <h1 className="contract-heading1 contract-main-page-header__title">
-        {MAIN_CONTRACT_TITLE}
-      </h1>
+      <div className="contract-main-page-header__intro">
+        <h1 className="contract-heading1 contract-main-page-header__title">
+          {MAIN_CONTRACT_TITLE}
+        </h1>
+        {subtitle ? (
+          <p className="contract-subtitle contract-subtitle--header">{subtitle}</p>
+        ) : null}
+      </div>
       <p className="contract-main-page-header__page">
         pagina {page}/{total}
       </p>

@@ -9,13 +9,15 @@ import DocumentContentRenderer, {
 import KlachtenprotocolBijlage from "./contract/KlachtenprotocolBijlage";
 import ProefperiodeBijlage from "./contract/ProefperiodeBijlage";
 import SignatureBlock from "./SignatureBlock";
-import { ClassicPageMarker, GALERIE_PARTY } from "./contract/shared";
+import { ClassicPageMarker, GALERIE_PARTY, MainContractPageHeader } from "./contract/shared";
 
 interface ContractDocumentProps {
   data: ContractFormData;
   calculations: ContractCalculations;
   signatureImageUrl?: string | null;
   signedByName?: string | null;
+  editable?: boolean;
+  onDocumentContentChange?: (content: import("@/lib/documentContent").DocumentContent) => void;
 }
 
 export default function ContractDocument({
@@ -23,6 +25,8 @@ export default function ContractDocument({
   calculations,
   signatureImageUrl,
   signedByName,
+  editable = false,
+  onDocumentContentChange,
 }: ContractDocumentProps) {
   const ingangsdatum = formatDateShort(data.ingangsdatum);
   const datumOvereenkomst = formatDateLong(data.datumOvereenkomst);
@@ -41,26 +45,30 @@ export default function ContractDocument({
   return (
     <div className="contract-pages contract-pages--sjabloon1">
       <section className="a4-page a4-page--sjabloon1-main">
-        <ContractLetterhead
-          data={data}
-          datumOvereenkomst={datumOvereenkomst}
-          variant="classic"
-        />
+        <ContractLetterhead data={data} datumOvereenkomst={datumOvereenkomst} />
 
-        <ClassicPageMarker page={1} total={2} />
+        <MainContractPageHeader
+          page={1}
+          total={2}
+          subtitle="Samenwerkingsovereenkomst partnerbedrijf"
+        />
 
         <DocumentContentRenderer
           data={data}
           calculations={calculations}
+          editable={editable}
+          onContentChange={onDocumentContentChange}
         />
       </section>
 
       <section className="a4-page a4-page--flex a4-page--sjabloon1-main">
-        <ClassicPageMarker page={2} total={2} />
+        <MainContractPageHeader page={2} total={2} />
 
         <DocumentContentRendererPage2
           data={data}
           calculations={calculations}
+          editable={editable}
+          onContentChange={onDocumentContentChange}
         />
 
         <SignatureBlock
