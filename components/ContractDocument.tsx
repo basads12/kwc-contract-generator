@@ -1,5 +1,5 @@
 import type { ContractCalculations, ContractFormData } from "@/lib/types";
-import { formatDateLong, formatDateShort } from "@/lib/formatters";
+import { formatDateLong } from "@/lib/formatters";
 import AdresaanleveringDocument from "./AdresaanleveringDocument";
 import AvgBijlageSjabloon1 from "./contract/AvgBijlageSjabloon1";
 import ContractLetterhead from "./contract/ContractLetterhead";
@@ -7,9 +7,8 @@ import DocumentContentRenderer, {
   DocumentContentRendererPage2,
 } from "./contract/DocumentContentRenderer";
 import KlachtenprotocolBijlage from "./contract/KlachtenprotocolBijlage";
-import ProefperiodeBijlage from "./contract/ProefperiodeBijlage";
 import SignatureBlock from "./SignatureBlock";
-import { ClassicPageMarker, GALERIE_PARTY, MainContractPageHeader } from "./contract/shared";
+import { GALERIE_PARTY, MainContractPageHeader } from "./contract/shared";
 
 interface ContractDocumentProps {
   data: ContractFormData;
@@ -28,7 +27,6 @@ export default function ContractDocument({
   editable = false,
   onDocumentContentChange,
 }: ContractDocumentProps) {
-  const ingangsdatum = formatDateShort(data.ingangsdatum);
   const datumOvereenkomst = formatDateLong(data.datumOvereenkomst);
   const galerieNaam = data.naamVertegenwoordigerGalerie;
   const signatureProps = {
@@ -88,11 +86,6 @@ export default function ContractDocument({
       <AvgBijlageSjabloon1 {...signatureProps} />
       <KlachtenprotocolBijlage {...signatureProps} />
       <AdresaanleveringDocument data={data} />
-      <ProefperiodeBijlage
-        {...signatureProps}
-        ingangsdatum={ingangsdatum}
-        proefperiodeMaanden={data.proefperiodeMaanden}
-      />
     </div>
   );
 }

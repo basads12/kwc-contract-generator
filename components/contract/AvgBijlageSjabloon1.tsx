@@ -1,5 +1,5 @@
 import SignatureBlock from "../SignatureBlock";
-import { DashItem, GALERIE_PARTY, Paragraph } from "./shared";
+import { GALERIE_PARTY, Paragraph } from "./shared";
 import type { ContractSignatureProps } from "./KlachtenprotocolBijlage";
 
 export default function AvgBijlageSjabloon1({
@@ -13,45 +13,49 @@ export default function AvgBijlageSjabloon1({
   signedByName,
 }: ContractSignatureProps) {
   return (
-    <section className="a4-page a4-page--flex a4-page--bijlage1">
-      <h1 className="contract-heading1">Bijlage 1</h1>
-      <h2 className="contract-heading2">Overeenkomst inzake AVG</h2>
-      <Paragraph>
-        Overeenkomst inzake AVG tussen Galerie De Kunst van Kunst en{" "}
-        {bedrijfsnaam}.
-      </Paragraph>
-      <Paragraph>
+    <section className="a4-page a4-page--flex a4-page--bijlage1 a4-page--avg-bijlage">
+      <p className="avg-bijlage__label">Bijlage 1</p>
+
+      <p className="avg-bijlage__title">
+        Overeenkomst inzake AVG {bedrijfsnaam}
+      </p>
+
+      <p className="avg-bijlage__intro">
         In het kader van de Algemene Verordening Gegevensbescherming verklaren
         wij hierbij:
-      </Paragraph>
-      <DashItem>
+      </p>
+
+      <Paragraph>
         Wij verwerken de door u verstrekte gegevens uitsluitend voor het namens
-        u aanbieden van de Kunst-waardecheque door middel van e-mail, post of
+        u aanbieden van de kunst-waardecheque door middel van e-mail, post of
         telefoon.
-      </DashItem>
-      <DashItem>
+      </Paragraph>
+      <Paragraph>
         Wij bewaren de gegevens maximaal 24 maanden na datum benadering.
-      </DashItem>
-      <DashItem>
+      </Paragraph>
+      <Paragraph>
         Wij hebben een geheimhoudingsplicht voor alle persoonsgegevens die wij
         van u verkrijgen.
-      </DashItem>
-      <DashItem>
+      </Paragraph>
+      <Paragraph>
         Uitsluitend de eigen medewerkers van {GALERIE_PARTY} hebben toegang tot
-        uw gegevens. Al onze medewerkers hebben een geheimhoudingsverklaring
-        ondertekend en zijn geïnstrueerd over de omgang met persoonsgegevens.
-      </DashItem>
-      <DashItem>
+        uw gegevens.
+      </Paragraph>
+      <Paragraph>
+        Al onze medewerkers hebben een geheimhoudingsverklaring ondertekend en
+        zijn geïnstrueerd over de omgang met persoonsgegevens.
+      </Paragraph>
+      <Paragraph>
         Wij hebben afdoende maatregelen getroffen voor beveiliging van de
         persoonsgegevens, zowel organisatorisch als technisch.
-      </DashItem>
-      <DashItem>
+      </Paragraph>
+      <Paragraph>
         Wij hebben de plicht om u onverwijld te informeren als er een risico
         ontstaat ten aanzien van persoonsgegevens (bijvoorbeeld een datalek).
-      </DashItem>
+      </Paragraph>
       <Paragraph>
-        Tevens neemt {bedrijfsnaam} in haar privacyvoorwaarden op dat de
-        gegevens van de klanten voor aftersaledoeleinden gebruikt kunnen worden.
+        Tevens neemt {bedrijfsnaam} in haar Privacy Voorwaarden op dat de
+        gegevens van de klanten voor aftersale doeleinden gebruikt mogen worden.
       </Paragraph>
 
       <SignatureBlock

@@ -7,6 +7,8 @@ interface SignatureBlockProps {
   plaatsOndertekening: string;
   datum: string;
   variant?: "main" | "bijlage";
+  columns?: 2 | 3;
+  datePrefix?: "voor-akkoord" | "none";
   signatureImageUrl?: string | null;
   signedByName?: string | null;
 }
@@ -26,13 +28,17 @@ export default function SignatureBlock({
   plaatsOndertekening,
   datum,
   variant = "main",
+  columns: columnCount = 3,
+  datePrefix = "voor-akkoord",
   signatureImageUrl,
   signedByName,
 }: SignatureBlockProps) {
   const clientName = signedByName ?? contactpersoon;
   const columns: SignatureColumn[] = [
     { party: galerieParty, name: galerieNaam },
-    { party: galerieParty, name: galerieTweedeNaam },
+    ...(columnCount === 3
+      ? [{ party: galerieParty, name: galerieTweedeNaam }]
+      : []),
     {
       party: bedrijfsnaam,
       name: clientName,
@@ -40,15 +46,20 @@ export default function SignatureBlock({
     },
   ];
 
+  const dateText =
+    datePrefix === "none"
+      ? `${plaatsOndertekening}, ${datum}`
+      : `Voor akkoord, ${plaatsOndertekening} ${datum}`;
+
   return (
     <div
       className={`signature-block ${variant === "main" ? "signature-block--main" : "signature-block--bijlage"}`}
     >
-      <p className="signature-date">
-        Voor akkoord, {plaatsOndertekening} {datum}
-      </p>
+      <p className="signature-date">{dateText}</p>
 
-      <table className="signature-table">
+      <table
+        className={`signature-table ${columnCount === 2 ? "signature-table--two-col" : ""}`}
+      >
         <tbody>
           <tr className="signature-table__party-row">
             {columns.map((column) => (

@@ -291,6 +291,36 @@ body {
   height: 7mm;
 }
 
+.a4-page--avg-bijlage .avg-bijlage__label {
+  margin: 0 0 var(--contract-space-md);
+  text-align: right;
+  font-size: 12.5pt;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.a4-page--avg-bijlage .avg-bijlage__title {
+  margin: 0 0 var(--contract-space-sm);
+  font-weight: 700;
+  text-decoration: underline;
+  line-height: 1.2;
+}
+
+.a4-page--avg-bijlage .avg-bijlage__intro {
+  margin: 0 0 var(--contract-space-md);
+  font-weight: 700;
+  text-decoration: underline;
+  line-height: 1.2;
+}
+
+.a4-page--avg-bijlage .contract-paragraph {
+  margin-bottom: var(--contract-space-sm);
+}
+
+.signature-table--two-col td {
+  width: 50%;
+}
+
 .contract-main-page-header__intro {
   min-width: 0;
 }

@@ -82,7 +82,7 @@ export const SIJABLOON_1_DOCUMENT_CONTENT: DocumentContent = {
     },
     "15": {
       title: "Proefperiode.",
-      body: "Zie bijlage 4.",
+      body: "Vanaf {{ingangsdatum}} geldt een proefperiode van {{proefperiodeMaanden}}. Gedurende deze proefperiode kan de overeenkomst uitsluitend schriftelijk worden opgezegd indien het aantal gegronde klachten in de proefperiode meer dan 1% bedraagt van het aantal in die periode benaderde klanten. Onder een klacht wordt hierbij uitsluitend verstaan een klacht in de zin van het protocol klachtenafhandeling (Bijlage 2): van een klacht is pas sprake wanneer de klant na afhandeling niet akkoord gaat met de door de galerie aangeboden oplossing.",
     },
   },
   continued: [
