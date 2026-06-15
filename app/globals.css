@@ -674,14 +674,14 @@ body {
   table-layout: fixed;
 }
 
-.adres-columns-table .col-aanhef { width: 9%; }
-.adres-columns-table .col-naam { width: 11%; }
-.adres-columns-table .col-adres { width: 13%; }
-.adres-columns-table .col-huisnummer { width: 8%; }
-.adres-columns-table .col-postcode { width: 9%; }
-.adres-columns-table .col-woonplaats { width: 12%; }
-.adres-columns-table .col-email { width: 15%; }
-.adres-columns-table .col-telefoon { width: 23%; }
+.adres-columns-table .col-aanhef { width: 8%; }
+.adres-columns-table .col-naam { width: 10%; }
+.adres-columns-table .col-adres { width: 12%; }
+.adres-columns-table .col-huisnummer { width: 12%; }
+.adres-columns-table .col-postcode { width: 10%; }
+.adres-columns-table .col-woonplaats { width: 11%; }
+.adres-columns-table .col-email { width: 13%; }
+.adres-columns-table .col-telefoon { width: 24%; }
 
 .adres-columns-table th,
 .adres-columns-table td {
@@ -690,13 +690,16 @@ body {
   font-weight: 400;
   text-align: left;
   vertical-align: bottom;
+  overflow: hidden;
 }
 
 .adres-columns-table th {
   font-weight: 700;
-  white-space: nowrap;
-  word-break: keep-all;
-  overflow-wrap: normal;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.08;
+  hyphens: auto;
 }
 
 .adres-columns-table__phone {
@@ -836,10 +839,10 @@ body {
     line-height: var(--contract-line-tight);
   }
 
-  .adres-columns-table th {
-    white-space: nowrap !important;
-    word-break: keep-all !important;
-    overflow-wrap: normal !important;
+  .adres-columns-table th:not(.adres-columns-table__phone) {
+    white-space: normal !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
   }
 
   .adres-columns-table__phone {
