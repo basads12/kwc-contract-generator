@@ -147,9 +147,9 @@ export default function ContractForm({ data, onChange }: ContractFormProps) {
       <FormSection title="Datum contract">
         <div className="mb-3 flex items-center justify-between gap-2">
           <p className="text-xs leading-relaxed text-zinc-500">
-            Wijzig je de datum overeenkomst, dan worden ingangsdatum (1e van de
-            maand) en alle aanleverdatums automatisch herberekend. Daarna kun je
-            alles nog handmatig aanpassen.
+            Wijzig je de datum overeenkomst, dan worden ingangsdatum en alle
+            aanleverdatums automatisch herberekend. Daarna kun je alles nog
+            handmatig aanpassen.
           </p>
           <button
             type="button"
@@ -183,7 +183,8 @@ export default function ContractForm({ data, onChange }: ContractFormProps) {
             onChange={(e) => update("ingangsdatum", e.target.value)}
           />
           <p className="mt-1 text-xs text-zinc-400">
-            Standaard: 1e van de maand na datum overeenkomst
+            Standaard: 1e van de maand na datum overeenkomst; elke datum is
+            handmatig aanpasbaar
           </p>
         </FormField>
         <FormField label="Looptijd overeenkomst (jaren)">

@@ -16,13 +16,6 @@ function clampBetween(iso: string, min: string, max: string): string {
   return iso;
 }
 
-/** Ingangsdatum altijd op de 1e van de maand */
-export function normalizeIngangsdatum(iso: string): string {
-  if (!iso) return iso;
-  const [year, month] = iso.split("-");
-  return `${year}-${month}-01`;
-}
-
 /** Standaard: 1e van de maand na datum overeenkomst */
 export function deriveIngangsdatum(datumOvereenkomst: string): string {
   if (!datumOvereenkomst) return "";
@@ -105,28 +98,28 @@ export function deriveAdresaanleveringDates(
   datumOvereenkomst: string,
   ingangsdatum: string
 ) {
-  const normalizedStart = normalizeIngangsdatum(ingangsdatum);
+  const start = ingangsdatum || deriveIngangsdatum(datumOvereenkomst);
   const datumLogoAanlevering = deriveDatumLogo(
     datumOvereenkomst,
-    normalizedStart
+    start
   );
   const datumAdresgegevens = deriveDatumAdresgegevens(
     datumOvereenkomst,
-    normalizedStart
+    start
   );
   const datumAkkoordProefdruk = deriveDatumAkkoordProefdruk(
     datumLogoAanlevering,
     datumAdresgegevens,
-    normalizedStart
+    start
   );
   const adjustedAdresgegevens = clampBetween(
     datumAdresgegevens,
     addDays(datumAkkoordProefdruk, 1),
-    addDays(normalizedStart, -1)
+    addDays(start, -1)
   );
 
   return {
-    ingangsdatum: normalizedStart,
+    ingangsdatum: start,
     datumLogoAanlevering,
     datumAkkoordProefdruk,
     ...syncNawDeadlineDates(adjustedAdresgegevens),
@@ -137,9 +130,7 @@ export function deriveContractDates(
   datumOvereenkomst: string,
   ingangsdatum?: string
 ) {
-  const start = ingangsdatum
-    ? normalizeIngangsdatum(ingangsdatum)
-    : deriveIngangsdatum(datumOvereenkomst);
+  const start = ingangsdatum || deriveIngangsdatum(datumOvereenkomst);
 
   return deriveAdresaanleveringDates(datumOvereenkomst, start);
 }
@@ -149,7 +140,7 @@ export function applyDatumOvereenkomstChange(datumOvereenkomst: string) {
   return deriveContractDates(datumOvereenkomst);
 }
 
-/** Bij wijziging ingangsdatum: alle aanleverdatums (ingangsdatum → 1e van de maand) */
+/** Bij wijziging ingangsdatum: alle aanleverdatums */
 export function applyIngangsdatumChange(
   data: { datumOvereenkomst: string },
   ingangsdatum: string
