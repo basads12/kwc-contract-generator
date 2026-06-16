@@ -3,7 +3,12 @@ import { put } from "@vercel/blob";
 import { prisma } from "@/lib/prisma";
 import { BUILTIN_TEMPLATES } from "@/lib/templates";
 import { parseDocumentContent } from "@/lib/documentContent";
-import { parseFormData, toPrismaJson, toPrismaJsonValue } from "@/lib/validation";
+import {
+  formatValidationError,
+  parseTemplateFormData,
+  toPrismaJson,
+  toPrismaJsonValue,
+} from "@/lib/validation";
 
 function slugify(value: string): string {
   return value
@@ -85,7 +90,7 @@ export async function POST(request: Request) {
 
       const slug = await createUniqueSlug(name);
       const defaultFormData = body.defaultFormData
-        ? toPrismaJson(parseFormData(body.defaultFormData))
+        ? toPrismaJson(parseTemplateFormData(body.defaultFormData))
         : undefined;
       const documentContent = body.documentContent
         ? toPrismaJsonValue(parseDocumentContent(body.documentContent) ?? {})
@@ -159,7 +164,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("POST /api/templates", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Opslaan mislukt" },
+      { error: formatValidationError(error) },
       { status: 400 }
     );
   }

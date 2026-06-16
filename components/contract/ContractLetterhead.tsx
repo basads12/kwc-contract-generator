@@ -45,18 +45,8 @@ export default function ContractLetterhead({
 
   return (
     <>
-      <div className="contract-sender">
-        <p className="contract-sender__name">{GALERIE_PARTY}</p>
-        <p className="contract-sender__address">{GALERIE_ADDRESS}</p>
-      </div>
-
       <div className="contract-recipient">
-        <div className="contract-recipient__row">
-          <p className="contract-recipient__company">{data.bedrijfsnaam}</p>
-          <p className="contract-recipient__date">
-            {data.plaatsOndertekening}, {datumOvereenkomst}
-          </p>
-        </div>
+        <p className="contract-recipient__company">{data.bedrijfsnaam}</p>
         <p className="contract-recipient__attn">{attn}</p>
         <p>{data.adres}</p>
         <p>

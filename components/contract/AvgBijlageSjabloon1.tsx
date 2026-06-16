@@ -13,7 +13,7 @@ export default function AvgBijlageSjabloon1({
   signedByName,
 }: ContractSignatureProps) {
   return (
-    <section className="a4-page a4-page--flex a4-page--bijlage1 a4-page--avg-bijlage">
+    <section className="a4-page a4-page--flex a4-page--bijlage1 a4-page--avg-bijlage contract-print-bijlage contract-print-bijlage-start">
       <div className="avg-bijlage__header">
         <p className="avg-bijlage__label">Bijlage 1</p>
 

@@ -59,7 +59,7 @@ export default function ContractDocumentSjabloon2({
 
   return (
     <div className="contract-pages">
-      <section className="a4-page">
+      <section className="a4-page contract-print-hoofdcontract">
         <ContractLetterhead data={data} datumOvereenkomst={datumOvereenkomst} />
         <MainContractPageHeader page={1} total={MAIN_PAGES} />
         <p className="contract-subtitle">Samenwerkingsovereenkomst partnerbedrijf</p>
@@ -161,7 +161,7 @@ export default function ContractDocumentSjabloon2({
         </Article>
       </section>
 
-      <section className="a4-page a4-page--flex">
+      <section className="a4-page a4-page--flex contract-print-hoofdcontract">
         <MainContractPageHeader page={2} total={MAIN_PAGES} />
 
         <Article number={7}>
@@ -255,7 +255,7 @@ export default function ContractDocumentSjabloon2({
         </Article>
       </section>
 
-      <section className="a4-page a4-page--flex">
+      <section className="a4-page a4-page--flex contract-print-hoofdcontract">
         <MainContractPageHeader page={3} total={MAIN_PAGES} />
 
         <Article number={16}>

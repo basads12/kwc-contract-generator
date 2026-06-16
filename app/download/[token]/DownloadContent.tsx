@@ -4,11 +4,9 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ContractPreview from "@/components/ContractPreview";
 import { calculateContractValues } from "@/lib/calculations";
+import PrintContractMenu from "@/components/PrintContractMenu";
 import { blobToBase64, generateContractPdfBlob } from "@/lib/generateContractPdf";
-import {
-  buildContractPdfFilename,
-  printContractWithFilename,
-} from "@/lib/contractPdfFilename";
+import { buildContractPdfFilename } from "@/lib/contractPdfFilename";
 import { parseFormDataWithDocument } from "@/lib/validation";
 import type { ContractFormData } from "@/lib/types";
 
@@ -149,18 +147,10 @@ export default function DownloadContent() {
         )}
         <h1 className="text-lg font-semibold">{contractNumber}</h1>
         <div className="mt-2 flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() =>
-              printContractWithFilename(
-                formData.bedrijfsnaam,
-                formData.datumOvereenkomst
-              )
-            }
-            className="rounded-md bg-zinc-800 px-4 py-2 text-sm text-white"
-          >
-            Opslaan als PDF (print)
-          </button>
+          <PrintContractMenu
+            bedrijfsnaam={formData.bedrijfsnaam}
+            datumOvereenkomst={formData.datumOvereenkomst}
+          />
           {pdfUrl && (
             <a
               href={pdfUrl}

@@ -8,7 +8,7 @@ import DocumentContentRenderer, {
 } from "./contract/DocumentContentRenderer";
 import KlachtenprotocolBijlage from "./contract/KlachtenprotocolBijlage";
 import SignatureBlock from "./SignatureBlock";
-import { GALERIE_PARTY, MainContractPageHeader } from "./contract/shared";
+import { GALERIE_PARTY, ContractPageNumber, MainContractPageHeader } from "./contract/shared";
 
 interface ContractDocumentProps {
   data: ContractFormData;
@@ -42,14 +42,10 @@ export default function ContractDocument({
 
   return (
     <div className="contract-pages contract-pages--sjabloon1">
-      <section className="a4-page a4-page--sjabloon1-main">
+      <section className="a4-page a4-page--sjabloon1-main contract-print-hoofdcontract">
         <ContractLetterhead data={data} datumOvereenkomst={datumOvereenkomst} />
 
-        <MainContractPageHeader
-          page={1}
-          total={2}
-          subtitle="Samenwerkingsovereenkomst partnerbedrijf"
-        />
+        <MainContractPageHeader />
 
         <DocumentContentRenderer
           data={data}
@@ -57,10 +53,12 @@ export default function ContractDocument({
           editable={editable}
           onContentChange={onDocumentContentChange}
         />
+
+        <ContractPageNumber page={1} />
       </section>
 
-      <section className="a4-page a4-page--flex a4-page--sjabloon1-main">
-        <MainContractPageHeader page={2} total={2} />
+      <section className="a4-page a4-page--flex a4-page--sjabloon1-main contract-print-hoofdcontract">
+        <MainContractPageHeader />
 
         <DocumentContentRendererPage2
           data={data}
@@ -81,6 +79,8 @@ export default function ContractDocument({
           signatureImageUrl={signatureImageUrl}
           signedByName={signedByName}
         />
+
+        <ContractPageNumber page={2} />
       </section>
 
       <AvgBijlageSjabloon1 {...signatureProps} />

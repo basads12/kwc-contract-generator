@@ -65,7 +65,7 @@ export const SIJABLOON_1_DOCUMENT_CONTENT: DocumentContent = {
       body: "U heeft gedurende de overeenkomst recht op een budget aan kunst uit onze galerie ter hoogte van 100% van het bedrag van het eerste jaar (zie punt 7: {{kunstbudget}} inclusief btw). Dit tegen commerciële prijzen in overeenstemming met de prijslijst van de galerie. Lijsten zijn hierbij niet inbegrepen.",
     },
     "9": {
-      body: "Wij factureren u vanaf {{ingangsdatum}} maandelijks {{maandbedrag}} exclusief btw. Betaling dient te geschieden binnen {{betaaltermijnDagen}}.",
+      body: "Wij factureren u vanaf {{ingangsdatum}} maandelijks {{maandbedrag}}. Betaling dient te geschieden binnen {{betaaltermijnDagen}}.",
     },
     "10": {
       body: "De KWC wordt uitsluitend ingezet als aftersalesgeschenk en mag niet worden gebruikt als verkoopargument of in reclame-uitingen.",

@@ -23,7 +23,7 @@ export default function KlachtenprotocolBijlage({
   signedByName,
 }: ContractSignatureProps) {
   return (
-    <section className="a4-page a4-page--flex a4-page--bijlage2">
+    <section className="a4-page a4-page--flex a4-page--bijlage2 contract-print-bijlage">
       <h1 className="contract-heading1">Bijlage 2</h1>
       <h2 className="contract-heading2">Protocol klachtenafhandeling</h2>
       <Paragraph>

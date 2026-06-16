@@ -5,7 +5,7 @@
   --foreground: #18181b;
   --font-sans: Helvetica, "Helvetica Neue", Arial, sans-serif;
   --contract-text: #000;
-  --contract-muted: #4b5563;
+  --contract-muted: #000;
   --contract-border: #d1d5db;
   --contract-margin: 25mm;
   --contract-line: 1.2;
@@ -152,9 +152,11 @@ body {
   --contract-line: 1.2;
   --contract-space-sm: 0.5rem;
   --contract-space-md: 0.65rem;
+  position: relative;
   padding: 25mm;
   line-height: var(--contract-line);
   text-align: left;
+  color: var(--contract-text);
 }
 
 .contract-pages--sjabloon1 > .a4-page--sjabloon1-main:first-child {
@@ -231,6 +233,20 @@ body {
     0 2px 10px rgba(0, 0, 0, 0.07);
   text-align: left;
   overflow: visible;
+}
+
+.a4-page,
+.a4-page * {
+  color: var(--contract-text);
+}
+
+.contract-page-number {
+  position: absolute;
+  right: 25mm;
+  bottom: 12mm;
+  font-size: 10pt;
+  line-height: 1;
+  color: var(--contract-text);
 }
 
 .a4-page--flex {
@@ -374,10 +390,7 @@ body {
 }
 
 .contract-main-page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 1rem;
+  display: block;
   margin: 0 0 var(--contract-space-md);
   padding-bottom: var(--contract-space-xs);
   border-bottom: 1px solid var(--contract-border);
@@ -389,12 +402,9 @@ body {
   letter-spacing: -0.01em;
 }
 
-.contract-main-page-header__page {
-  margin: 0;
-  font-size: 8.5pt;
-  color: var(--contract-muted);
-  line-height: 1.2;
-  white-space: nowrap;
+.contract-main-page-header__page,
+.contract-page-marker {
+  display: none;
 }
 
 .contract-heading1 {
@@ -428,7 +438,7 @@ body {
 
 .contract-sender__address {
   margin: 0.08rem 0 0;
-  color: var(--contract-muted);
+  color: var(--contract-text);
   font-size: 8.5pt;
   line-height: 1.15;
 }
@@ -466,9 +476,7 @@ body {
 }
 
 .contract-recipient__date {
-  color: var(--contract-muted);
-  font-size: 9.5pt;
-  white-space: nowrap;
+  display: none;
 }
 
 .contract-title {
@@ -693,7 +701,7 @@ body {
   margin: 0;
   line-height: 1;
   font-size: 7.5pt;
-  color: #6b7280;
+  color: var(--contract-text);
 }
 
 .signature-image {
@@ -702,6 +710,7 @@ body {
   max-width: 100%;
   object-fit: contain;
   object-position: left bottom;
+  filter: brightness(0);
 }
 
 .adres-columns-table {
@@ -950,5 +959,31 @@ body {
   .adres-columns-table__phone {
     white-space: nowrap !important;
     font-size: 6.5pt;
+  }
+
+  html[data-contract-print-scope="hoofdcontract"] .contract-print-bijlage,
+  html[data-contract-print-scope="bijlagen"] .contract-print-hoofdcontract {
+    display: none !important;
+  }
+
+  html[data-contract-print-scope="alles"] .contract-print-bijlage-start {
+    break-before: recto;
+    page-break-before: right;
+  }
+
+  .contract-page-number {
+    position: absolute;
+    right: 25mm;
+    bottom: 12mm;
+    color: #000 !important;
+  }
+
+  .a4-page,
+  .a4-page * {
+    color: #000 !important;
+  }
+
+  .signature-image {
+    filter: brightness(0);
   }
 }

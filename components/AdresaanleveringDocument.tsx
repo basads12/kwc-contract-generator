@@ -35,7 +35,7 @@ export default function AdresaanleveringDocument({
   );
 
   return (
-    <section className="a4-page a4-page--bijlage3">
+    <section className="a4-page a4-page--bijlage3 contract-print-bijlage">
       <h1 className="contract-heading1">Bijlage 3</h1>
       <h2 className="contract-heading2">Adresaanlevering</h2>
 

@@ -15,7 +15,7 @@ import {
   getInitialFormData,
 } from "@/lib/templateApply";
 import { syncFormBandbreedte } from "@/lib/calculations";
-import { printContractWithFilename } from "@/lib/contractPdfFilename";
+import PrintContractMenu from "@/components/PrintContractMenu";
 import type { ContractFormData } from "@/lib/types";
 
 interface ContractGeneratorProps {
@@ -57,9 +57,6 @@ export default function ContractGenerator({
     setMessage("Formulier geleegd");
   }
 
-  function handlePrint() {
-    printContractWithFilename(data.bedrijfsnaam, data.datumOvereenkomst);
-  }
 
   async function handleSave(status: "CONCEPT" | "KLAAR_VOOR_ONDERTEKENING") {
     if (!isEditable) return;
@@ -161,13 +158,10 @@ export default function ContractGenerator({
                 </button>
               </>
             )}
-            <button
-              type="button"
-              onClick={handlePrint}
-              className="rounded-md bg-zinc-800 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700"
-            >
-              Print / PDF
-            </button>
+            <PrintContractMenu
+              bedrijfsnaam={data.bedrijfsnaam}
+              datumOvereenkomst={data.datumOvereenkomst}
+            />
           </div>
         </div>
         {message && (

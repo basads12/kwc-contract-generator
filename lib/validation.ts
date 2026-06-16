@@ -49,6 +49,25 @@ export const contractFormSchema = z.object({
   baseTemplateSlug: z.string().optional(),
 });
 
+/** Sjablonen mogen lege klantgegevens bevatten (herbruikbare defaults). */
+export const templateFormSchema = contractFormSchema.extend({
+  bedrijfsnaam: z.string().default(""),
+  contactpersoon: z.string().default(""),
+  adres: z.string().default(""),
+  postcode: z.string().default(""),
+  plaats: z.string().default(""),
+});
+
+export function formatValidationError(error: unknown): string {
+  if (error instanceof z.ZodError) {
+    return error.issues.map((issue) => issue.message).join("; ");
+  }
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return "Validatiefout";
+}
+
 export function parseFormData(data: unknown): ContractFormData {
   const defaults = getDefaultValues();
   const merged =
@@ -70,6 +89,15 @@ export function parseFormDataWithDocument(data: unknown): ContractFormData {
     );
   }
   return parsed;
+}
+
+export function parseTemplateFormData(data: unknown): ContractFormData {
+  const defaults = getDefaultValues();
+  const merged =
+    typeof data === "object" && data !== null
+      ? { ...defaults, ...data }
+      : defaults;
+  return templateFormSchema.parse(merged);
 }
 
 export function parseContractStatus(value: unknown): ContractStatus {

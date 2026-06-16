@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { parseDocumentContent } from "@/lib/documentContent";
-import { parseFormData, toPrismaJson, toPrismaJsonValue } from "@/lib/validation";
+import {
+  formatValidationError,
+  parseTemplateFormData,
+  toPrismaJson,
+  toPrismaJsonValue,
+} from "@/lib/validation";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -36,7 +41,7 @@ export async function PATCH(request: Request, context: RouteContext) {
       data.description = String(body.description ?? "").trim() || null;
     }
     if (body.defaultFormData) {
-      data.defaultFormData = toPrismaJson(parseFormData(body.defaultFormData));
+      data.defaultFormData = toPrismaJson(parseTemplateFormData(body.defaultFormData));
     }
     if (body.documentContent) {
       data.documentContent = toPrismaJsonValue(
@@ -53,7 +58,7 @@ export async function PATCH(request: Request, context: RouteContext) {
   } catch (error) {
     console.error("PATCH /api/templates/[id]", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Bijwerken mislukt" },
+      { error: formatValidationError(error) },
       { status: 400 }
     );
   }

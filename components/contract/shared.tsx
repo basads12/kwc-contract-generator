@@ -28,12 +28,10 @@ export function CurrencyArt7Monthly({ amount }: { amount: number }) {
 }
 
 export function MainContractPageHeader({
-  page,
-  total,
   subtitle,
 }: {
-  page: number;
-  total: number;
+  page?: number;
+  total?: number;
   subtitle?: string;
 }) {
   return (
@@ -46,10 +44,15 @@ export function MainContractPageHeader({
           <p className="contract-subtitle contract-subtitle--header">{subtitle}</p>
         ) : null}
       </div>
-      <p className="contract-main-page-header__page">
-        pagina {page}/{total}
-      </p>
     </div>
+  );
+}
+
+export function ContractPageNumber({ page }: { page: number }) {
+  return (
+    <span className="contract-page-number" aria-label={`Pagina ${page}`}>
+      {page}
+    </span>
   );
 }
 
