@@ -5,6 +5,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import ContractPreview from "@/components/ContractPreview";
 import { calculateContractValues } from "@/lib/calculations";
 import { blobToBase64, generateContractPdfBlob } from "@/lib/generateContractPdf";
+import {
+  buildContractPdfFilename,
+  printContractWithFilename,
+} from "@/lib/contractPdfFilename";
 import { parseFormDataWithDocument } from "@/lib/validation";
 import type { ContractFormData } from "@/lib/types";
 
@@ -127,6 +131,11 @@ export default function DownloadContent() {
     );
   }
 
+  const pdfFileName = buildContractPdfFilename(
+    formData.bedrijfsnaam,
+    formData.datumOvereenkomst
+  );
+
   return (
     <div ref={printAreaRef}>
       <div className="no-print border-b border-zinc-200 bg-white px-4 py-4">
@@ -142,7 +151,12 @@ export default function DownloadContent() {
         <div className="mt-2 flex flex-wrap gap-2">
           <button
             type="button"
-            onClick={() => window.print()}
+            onClick={() =>
+              printContractWithFilename(
+                formData.bedrijfsnaam,
+                formData.datumOvereenkomst
+              )
+            }
             className="rounded-md bg-zinc-800 px-4 py-2 text-sm text-white"
           >
             Opslaan als PDF (print)
@@ -150,7 +164,7 @@ export default function DownloadContent() {
           {pdfUrl && (
             <a
               href={pdfUrl}
-              download
+              download={pdfFileName}
               className="rounded-md border border-zinc-300 px-4 py-2 text-sm"
             >
               Download PDF

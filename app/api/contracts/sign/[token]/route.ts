@@ -1,5 +1,6 @@
 import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
+import { getContractPdfBlobPath } from "@/lib/contractPdfUpload";
 import { prisma } from "@/lib/prisma";
 import { canSignContract } from "@/lib/contract-status";
 
@@ -111,7 +112,7 @@ export async function POST(request: Request, context: RouteContext) {
     if (pdfBase64) {
       const pdfBuffer = Buffer.from(pdfBase64, "base64");
       const pdfBlob = await put(
-        `contracts/${contract.contractNumber}/definitief.pdf`,
+        getContractPdfBlobPath(contract.contractNumber, contract.formData),
         pdfBuffer,
         { access: "public", contentType: "application/pdf" }
       );

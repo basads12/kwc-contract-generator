@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import ContractPreview from "@/components/ContractPreview";
 import { calculateContractValues } from "@/lib/calculations";
+import { printContractWithFilename } from "@/lib/contractPdfFilename";
 import { parseFormDataWithDocument } from "@/lib/validation";
 import type { ContractFormData } from "@/lib/types";
 
@@ -40,7 +41,12 @@ export default function VoorbeeldPage() {
       <div className="no-print border-b border-zinc-200 bg-white px-4 py-3">
         <button
           type="button"
-          onClick={() => window.print()}
+          onClick={() =>
+            printContractWithFilename(
+              formData.bedrijfsnaam,
+              formData.datumOvereenkomst
+            )
+          }
           className="rounded-md bg-zinc-800 px-4 py-2 text-sm text-white"
         >
           Print / PDF

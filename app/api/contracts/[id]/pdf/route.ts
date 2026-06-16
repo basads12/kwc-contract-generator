@@ -1,5 +1,6 @@
 import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
+import { getContractPdfBlobPath } from "@/lib/contractPdfUpload";
 import { prisma } from "@/lib/prisma";
 
 type RouteContext = { params: Promise<{ id: string }> };
@@ -25,7 +26,7 @@ export async function POST(request: Request, context: RouteContext) {
     }
 
     const blob = await put(
-      `contracts/${contract.contractNumber}/definitief.pdf`,
+      getContractPdfBlobPath(contract.contractNumber, contract.formData),
       file,
       { access: "public", addRandomSuffix: false }
     );

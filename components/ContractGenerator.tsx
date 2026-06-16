@@ -15,6 +15,7 @@ import {
   getInitialFormData,
 } from "@/lib/templateApply";
 import { syncFormBandbreedte } from "@/lib/calculations";
+import { printContractWithFilename } from "@/lib/contractPdfFilename";
 import type { ContractFormData } from "@/lib/types";
 
 interface ContractGeneratorProps {
@@ -57,7 +58,7 @@ export default function ContractGenerator({
   }
 
   function handlePrint() {
-    window.print();
+    printContractWithFilename(data.bedrijfsnaam, data.datumOvereenkomst);
   }
 
   async function handleSave(status: "CONCEPT" | "KLAAR_VOOR_ONDERTEKENING") {

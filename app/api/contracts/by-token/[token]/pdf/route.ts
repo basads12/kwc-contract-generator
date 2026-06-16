@@ -1,5 +1,8 @@
 import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
+import { getContractPdfBlobPath } from "@/lib/contractPdfUpload";
+import { buildContractPdfFilename } from "@/lib/contractPdfFilename";
+import { parseFormDataWithDocument } from "@/lib/validation";
 import { prisma } from "@/lib/prisma";
 
 type RouteContext = { params: Promise<{ token: string }> };
@@ -27,8 +30,9 @@ export async function POST(request: Request, context: RouteContext) {
     }
 
     const pdfBuffer = Buffer.from(pdfBase64, "base64");
+    const formData = parseFormDataWithDocument(contract.formData);
     const blob = await put(
-      `contracts/${contract.contractNumber}/definitief.pdf`,
+      getContractPdfBlobPath(contract.contractNumber, contract.formData),
       pdfBuffer,
       { access: "public", contentType: "application/pdf" }
     );
@@ -39,7 +43,13 @@ export async function POST(request: Request, context: RouteContext) {
       select: { pdfUrl: true },
     });
 
-    return NextResponse.json(updated);
+    return NextResponse.json({
+      ...updated,
+      pdfFileName: buildContractPdfFilename(
+        formData.bedrijfsnaam,
+        formData.datumOvereenkomst
+      ),
+    });
   } catch (error) {
     console.error("POST /api/contracts/by-token/[token]/pdf", error);
     const message =

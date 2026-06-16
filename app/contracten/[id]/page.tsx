@@ -8,6 +8,7 @@ import {
   getStatusBadgeClass,
 } from "@/lib/contract-status";
 import { getDownloadUrl, getSignUrl } from "@/lib/contracts";
+import { buildContractPdfFilename } from "@/lib/contractPdfFilename";
 import { formatCurrency } from "@/lib/formatters";
 import type { ContractFormData } from "@/lib/types";
 import type { ContractStatus } from "@prisma/client";
@@ -204,6 +205,10 @@ export default function ContractDetailPage() {
                 {contract.pdfUrl && (
                   <a
                     href={contract.pdfUrl}
+                    download={buildContractPdfFilename(
+                      contract.formData.bedrijfsnaam,
+                      contract.formData.datumOvereenkomst
+                    )}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="rounded-md border border-zinc-300 px-3 py-2 text-sm hover:bg-zinc-50"
