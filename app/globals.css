@@ -157,6 +157,11 @@ body {
   text-align: left;
 }
 
+.contract-pages--sjabloon1 > .a4-page--sjabloon1-main:first-child {
+  min-height: 297mm;
+  max-height: 297mm;
+}
+
 .a4-page--sjabloon1-main .contract-main-page-header {
   margin-top: 0.15rem;
   margin-bottom: 0.7rem;
@@ -878,8 +883,11 @@ body {
   }
 
   .contract-pages--sjabloon1 > .a4-page--sjabloon1-main:first-child {
-    min-height: 0 !important;
-    height: auto !important;
+    height: 297mm !important;
+    min-height: 297mm !important;
+    max-height: 297mm !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
   .contract-pages--sjabloon1 > .a4-page--sjabloon1-main:nth-child(2),

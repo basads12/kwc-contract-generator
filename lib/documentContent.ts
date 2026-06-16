@@ -1,4 +1,4 @@
-import { SIJABLOON_1_SLUG } from "./templateConstants";
+import { SIJABLOON_1_SLUG, MAIN_CONTRACT_PAGE1_LAST_ARTICLE } from "./templateConstants";
 
 export interface DocumentArticleContent {
   title?: string;
@@ -118,18 +118,29 @@ export function serializeDocumentToFullText(content: DocumentContent): string {
     .map(Number)
     .sort((a, b) => a - b);
 
-  for (const number of numbers.filter((value) => value <= 6)) {
+  for (const number of numbers.filter(
+    (value) => value <= MAIN_CONTRACT_PAGE1_LAST_ARTICLE
+  )) {
     const article = content.articles[String(number)];
     if (article) parts.push(formatArticleLine(number, article));
   }
 
   parts.push(PAGE_BREAK_MARKER);
 
+  for (const number of numbers.filter(
+    (value) => value === MAIN_CONTRACT_PAGE1_LAST_ARTICLE + 1
+  )) {
+    const article = content.articles[String(number)];
+    if (article) parts.push(formatArticleLine(number, article));
+  }
+
   for (const paragraph of content.continued ?? []) {
     if (paragraph.trim()) parts.push(paragraph.trim());
   }
 
-  for (const number of numbers.filter((value) => value >= 7)) {
+  for (const number of numbers.filter(
+    (value) => value > MAIN_CONTRACT_PAGE1_LAST_ARTICLE + 1
+  )) {
     const article = content.articles[String(number)];
     if (article) parts.push(formatArticleLine(number, article));
   }

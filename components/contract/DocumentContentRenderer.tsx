@@ -5,7 +5,7 @@ import {
   type DocumentContent,
 } from "@/lib/documentContent";
 import { type DocumentRenderContext, normalizeIntroProefperiodeTemplate } from "@/lib/renderDocumentText";
-import { SIJABLOON_1_SLUG } from "@/lib/templateConstants";
+import { SIJABLOON_1_SLUG, MAIN_CONTRACT_PAGE1_LAST_ARTICLE } from "@/lib/templateConstants";
 import { Article } from "./shared";
 import EditableDocumentText from "./EditableDocumentText";
 
@@ -136,7 +136,7 @@ export default function DocumentContentRenderer({
       ) : null}
 
       {articleNumbers
-        .filter((number) => number <= 6)
+        .filter((number) => number <= MAIN_CONTRACT_PAGE1_LAST_ARTICLE)
         .map((number) => {
           const article = resolved.articles[String(number)];
           if (!article) return null;
@@ -174,6 +174,24 @@ export function DocumentContentRendererPage2({
 
   return (
     <>
+      {articleNumbers
+        .filter((number) => number === MAIN_CONTRACT_PAGE1_LAST_ARTICLE + 1)
+        .map((number) => {
+          const article = resolved.articles[String(number)];
+          if (!article) return null;
+          return (
+            <Article key={number} number={number}>
+              {renderArticleBody(
+                article.body,
+                context,
+                editable,
+                (body) => updateContent(patchArticle(resolved, number, body)),
+                article.title
+              )}
+            </Article>
+          );
+        })}
+
       {(resolved.continued ?? []).map((paragraph, index) => (
         <p key={`continued-${index}`} className="contract-article-continued">
           <EditableDocumentText
@@ -190,7 +208,7 @@ export function DocumentContentRendererPage2({
       ))}
 
       {articleNumbers
-        .filter((number) => number >= 7)
+        .filter((number) => number > MAIN_CONTRACT_PAGE1_LAST_ARTICLE + 1)
         .map((number) => {
           const article = resolved.articles[String(number)];
           if (!article) return null;
