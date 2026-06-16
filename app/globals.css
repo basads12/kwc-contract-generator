@@ -795,11 +795,19 @@ body {
 @media print {
   @page {
     size: A4 portrait;
-    margin: 25mm;
+    margin: 0;
+  }
+
+  :root {
+    --contract-margin: 25mm;
   }
 
   html,
   body {
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
     background: white !important;
     color: #000 !important;
     font-family: Helvetica, "Helvetica Neue", Arial, sans-serif !important;
@@ -811,35 +819,52 @@ body {
     display: none !important;
   }
 
-  .contract-preview {
+  .contract-preview,
+  .contract-preview--scaled {
     display: block !important;
-    width: 100% !important;
+    width: 210mm !important;
+    max-width: none !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
     overflow: visible !important;
     background: white !important;
-    padding: 0 !important;
   }
 
   .contract-preview__viewport,
-  .contract-preview__content {
-    width: auto !important;
-    height: auto !important;
+  .contract-preview__content,
+  .contract-preview__content--scaled {
+    display: block !important;
+    width: 210mm !important;
+    max-width: none !important;
     transform: none !important;
     margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  .contract-pages,
+  .contract-pages--sjabloon1 {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    width: 210mm !important;
     max-width: none !important;
+    margin: 0 !important;
   }
 
-  .contract-pages {
-    gap: 0;
-    max-width: none;
-  }
-
-  .a4-page {
-    width: auto;
-    min-height: 0;
-    height: auto;
-    padding: 0;
+  .a4-page,
+  .a4-page--sjabloon1-main,
+  .a4-page--bijlage1,
+  .a4-page--bijlage2,
+  .a4-page--bijlage3 {
+    width: 210mm !important;
+    max-width: 210mm !important;
+    min-width: 210mm !important;
+    min-height: 297mm !important;
+    box-sizing: border-box !important;
+    padding: 25mm !important;
+    margin: 0 !important;
     box-shadow: none !important;
-    margin: 0;
     font-size: 10pt;
     line-height: var(--contract-line);
     page-break-after: always;
@@ -847,9 +872,32 @@ body {
     overflow: visible;
   }
 
+  .a4-page--flex {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
   .a4-page:last-child {
     page-break-after: auto;
     break-after: auto;
+  }
+
+  .a4-page--bijlage1,
+  .a4-page--bijlage2,
+  .a4-page--bijlage3 {
+    font-size: 9.5pt;
+    line-height: var(--contract-line-tight);
+  }
+
+  .a4-page--avg-bijlage {
+    font-size: 10pt;
+    line-height: 1.35;
+    min-height: 297mm !important;
+  }
+
+  .a4-page--avg-bijlage .avg-bijlage__body {
+    flex: 1;
+    justify-content: space-between;
   }
 
   .contract-article,
@@ -866,22 +914,10 @@ body {
     opacity: 1 !important;
   }
 
-  .a4-page--bijlage1,
-  .a4-page--bijlage2,
-  .a4-page--bijlage3 {
-    font-size: 9.5pt;
-    line-height: var(--contract-line-tight);
-  }
-
-  .a4-page--avg-bijlage {
-    font-size: 10pt;
-    line-height: 1.35;
-    min-height: 297mm;
-  }
-
-  .a4-page--avg-bijlage .avg-bijlage__body {
-    flex: 1;
-    justify-content: space-between;
+  .signature-block,
+  .signature-table {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 
   .adres-columns-table th:not(.adres-columns-table__phone) {

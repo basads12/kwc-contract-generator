@@ -1,3 +1,10 @@
+import {
+  A4_HEIGHT_MM,
+  A4_WIDTH_MM,
+  A4_WIDTH_PX,
+  prepareContractForCapture,
+} from "./printContract";
+
 export async function generateContractPdfBlob(
   rootElement: HTMLElement
 ): Promise<Blob> {
@@ -6,40 +13,43 @@ export async function generateContractPdfBlob(
     import("jspdf"),
   ]);
 
-  const pages = rootElement.querySelectorAll<HTMLElement>(".a4-page");
-  const targets = pages.length > 0 ? Array.from(pages) : [rootElement];
+  const restore = prepareContractForCapture(rootElement);
+  await new Promise((resolve) => requestAnimationFrame(() => resolve(undefined)));
 
-  const pdf = new jsPDF({
-    orientation: "portrait",
-    unit: "mm",
-    format: "a4",
-  });
+  try {
+    const pages = rootElement.querySelectorAll<HTMLElement>(".a4-page");
+    const targets = pages.length > 0 ? Array.from(pages) : [rootElement];
 
-  for (let i = 0; i < targets.length; i++) {
-    const canvas = await html2canvas(targets[i], {
-      scale: 2,
-      useCORS: true,
-      logging: false,
-      backgroundColor: "#ffffff",
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
     });
 
-    const imgData = canvas.toDataURL("image/jpeg", 0.92);
-    const pageWidth = 210;
-    const pageHeight = 297;
-    const ratio = Math.min(
-      pageWidth / canvas.width,
-      pageHeight / canvas.height
-    );
-    const imgWidth = canvas.width * ratio;
-    const imgHeight = canvas.height * ratio;
-    const offsetX = (pageWidth - imgWidth) / 2;
-    const offsetY = 0;
+    const heightPx = Math.round((A4_HEIGHT_MM * 96) / 25.4);
 
-    if (i > 0) pdf.addPage();
-    pdf.addImage(imgData, "JPEG", offsetX, offsetY, imgWidth, imgHeight);
+    for (let i = 0; i < targets.length; i++) {
+      const canvas = await html2canvas(targets[i], {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#ffffff",
+        width: Math.round(A4_WIDTH_PX),
+        height: heightPx,
+        windowWidth: Math.round(A4_WIDTH_PX),
+        windowHeight: heightPx,
+      });
+
+      const imgData = canvas.toDataURL("image/jpeg", 0.95);
+
+      if (i > 0) pdf.addPage();
+      pdf.addImage(imgData, "JPEG", 0, 0, A4_WIDTH_MM, A4_HEIGHT_MM);
+    }
+
+    return pdf.output("blob");
+  } finally {
+    restore();
   }
-
-  return pdf.output("blob");
 }
 
 export async function blobToBase64(blob: Blob): Promise<string> {

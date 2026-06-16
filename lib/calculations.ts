@@ -94,6 +94,13 @@ export function syncBandbreedte(aantalAdressenPerJaar: number) {
   };
 }
 
+export function syncFormBandbreedte(data: ContractFormData): ContractFormData {
+  return {
+    ...data,
+    ...syncBandbreedte(data.aantalAdressenPerJaar),
+  };
+}
+
 export function applyJaarbedragChange(
   data: ContractFormData,
   jaarbedrag: number
@@ -147,11 +154,12 @@ export function applyAdressenOrTariefChange(
 export function calculateContractValues(
   data: ContractFormData
 ): ContractCalculations {
+  const bandbreedte = syncBandbreedte(data.aantalAdressenPerJaar);
   return {
     jaarbedrag: data.jaarbedrag,
     maandbedrag: data.maandbedrag,
-    ondergrens: data.ondergrens,
-    bovengrens: data.bovengrens,
+    ondergrens: bandbreedte.ondergrens,
+    bovengrens: bandbreedte.bovengrens,
     kunstbudget: data.kunstbudget,
   };
 }
@@ -159,11 +167,11 @@ export function calculateContractValues(
 export function applySuggestedCalculations(
   data: ContractFormData
 ): ContractFormData {
-  return {
+  return syncFormBandbreedte({
     ...data,
     ...deriveFromAdressenAndTarief(
       data.aantalAdressenPerJaar,
       data.tariefPerAdres
     ),
-  };
+  });
 }

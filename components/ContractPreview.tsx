@@ -11,6 +11,7 @@ import {
 import type { ContractCalculations, ContractFormData } from "@/lib/types";
 import { SIJABLOON_2_SLUG } from "@/lib/templateConstants";
 import { resolveBaseTemplateSlug } from "@/lib/templateApply";
+import { prepareContractForCapture } from "@/lib/printContract";
 import ContractDocument from "./ContractDocument";
 import ContractDocumentSjabloon2 from "./ContractDocumentSjabloon2";
 
@@ -116,6 +117,31 @@ export default function ContractPreview({
       window.removeEventListener("orientationchange", onViewportChange);
       viewport?.removeEventListener("resize", onViewportChange);
       viewport?.removeEventListener("scroll", onViewportChange);
+    };
+  }, [measure]);
+
+  useEffect(() => {
+    let restore: (() => void) | null = null;
+
+    function handleBeforePrint() {
+      if (containerRef.current) {
+        restore = prepareContractForCapture(containerRef.current);
+      }
+    }
+
+    function handleAfterPrint() {
+      restore?.();
+      restore = null;
+      measure();
+    }
+
+    window.addEventListener("beforeprint", handleBeforePrint);
+    window.addEventListener("afterprint", handleAfterPrint);
+
+    return () => {
+      restore?.();
+      window.removeEventListener("beforeprint", handleBeforePrint);
+      window.removeEventListener("afterprint", handleAfterPrint);
     };
   }, [measure]);
 

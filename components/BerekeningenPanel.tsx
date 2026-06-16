@@ -8,6 +8,7 @@ import {
   applyKunstbudgetChange,
   applyMaandbedragChange,
   applySuggestedCalculations,
+  syncBandbreedte,
 } from "@/lib/calculations";
 
 interface BerekeningenFieldsProps {
@@ -21,6 +22,8 @@ export default function BerekeningenFields({
   onChange,
   inputClass,
 }: BerekeningenFieldsProps) {
+  const bandbreedte = syncBandbreedte(data.aantalAdressenPerJaar);
+
   function update<K extends keyof ContractFormData>(
     key: K,
     value: ContractFormData[K]
@@ -35,7 +38,7 @@ export default function BerekeningenFields({
           Jaarbedrag = adressen × tarief (minimum € 2.400 excl. btw). Adressen,
           tarief en jaarbedrag passen automatisch op elkaar aan. Maandbedrag en
           kunstbudget volgen het jaarbedrag. Onder- en bovengrens (70%/130%)
-          worden bijgewerkt bij wijziging van adressen of tarief.
+          worden automatisch berekend uit het aantal adressen per jaar.
         </p>
         <button
           type="button"
@@ -115,22 +118,24 @@ export default function BerekeningenFields({
             <label className="mb-1 block text-xs font-medium text-zinc-600">
               Ondergrens (70%)
             </label>
-            <NumericInput
-              className={inputClass}
-              min={0}
-              value={data.ondergrens}
-              onChange={(value) => update("ondergrens", value)}
+            <input
+              type="text"
+              readOnly
+              tabIndex={-1}
+              className={`${inputClass} cursor-default bg-zinc-50 text-zinc-700`}
+              value={bandbreedte.ondergrens || ""}
             />
           </div>
           <div>
             <label className="mb-1 block text-xs font-medium text-zinc-600">
               Bovengrens (130%)
             </label>
-            <NumericInput
-              className={inputClass}
-              min={0}
-              value={data.bovengrens}
-              onChange={(value) => update("bovengrens", value)}
+            <input
+              type="text"
+              readOnly
+              tabIndex={-1}
+              className={`${inputClass} cursor-default bg-zinc-50 text-zinc-700`}
+              value={bandbreedte.bovengrens || ""}
             />
           </div>
         </div>

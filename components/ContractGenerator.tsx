@@ -14,6 +14,7 @@ import {
   ensureDocumentContent,
   getInitialFormData,
 } from "@/lib/templateApply";
+import { syncFormBandbreedte } from "@/lib/calculations";
 import type { ContractFormData } from "@/lib/types";
 
 interface ContractGeneratorProps {
@@ -66,7 +67,7 @@ export default function ContractGenerator({
     try {
       const url = contractId ? `/api/contracts/${contractId}` : "/api/contracts";
       const method = contractId ? "PATCH" : "POST";
-      const payload = ensureDocumentContent(data);
+      const payload = ensureDocumentContent(syncFormBandbreedte(data));
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
