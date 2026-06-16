@@ -1,5 +1,6 @@
 import {
   A4_HEIGHT_MM,
+  A4_HEIGHT_PX,
   A4_WIDTH_MM,
   A4_WIDTH_PX,
   prepareContractForCapture,
@@ -26,24 +27,38 @@ export async function generateContractPdfBlob(
       format: "a4",
     });
 
-    const heightPx = Math.round((A4_HEIGHT_MM * 96) / 25.4);
-
     for (let i = 0; i < targets.length; i++) {
-      const canvas = await html2canvas(targets[i], {
+      const page = targets[i];
+      const contentHeightPx = Math.ceil(
+        Math.max(page.scrollHeight, page.getBoundingClientRect().height)
+      );
+      const captureHeightPx = Math.max(A4_HEIGHT_PX, contentHeightPx);
+
+      const canvas = await html2canvas(page, {
         scale: 2,
         useCORS: true,
         logging: false,
         backgroundColor: "#ffffff",
         width: Math.round(A4_WIDTH_PX),
-        height: heightPx,
+        height: captureHeightPx,
         windowWidth: Math.round(A4_WIDTH_PX),
-        windowHeight: heightPx,
+        windowHeight: captureHeightPx,
       });
 
       const imgData = canvas.toDataURL("image/jpeg", 0.95);
+      const renderedHeightMm =
+        (canvas.height / canvas.width) * A4_WIDTH_MM;
+
+      let drawWidth = A4_WIDTH_MM;
+      let drawHeight = renderedHeightMm;
+      if (renderedHeightMm > A4_HEIGHT_MM) {
+        const scale = A4_HEIGHT_MM / renderedHeightMm;
+        drawWidth = A4_WIDTH_MM * scale;
+        drawHeight = A4_HEIGHT_MM;
+      }
 
       if (i > 0) pdf.addPage();
-      pdf.addImage(imgData, "JPEG", 0, 0, A4_WIDTH_MM, A4_HEIGHT_MM);
+      pdf.addImage(imgData, "JPEG", 0, 0, drawWidth, drawHeight);
     }
 
     return pdf.output("blob");

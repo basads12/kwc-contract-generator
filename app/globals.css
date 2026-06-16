@@ -860,16 +860,31 @@ body {
     width: 210mm !important;
     max-width: 210mm !important;
     min-width: 210mm !important;
-    min-height: 297mm !important;
     box-sizing: border-box !important;
     padding: 25mm !important;
     margin: 0 !important;
     box-shadow: none !important;
     font-size: 10pt;
     line-height: var(--contract-line);
-    page-break-after: always;
-    break-after: page;
     overflow: visible;
+    page-break-after: auto;
+    break-after: auto;
+  }
+
+  .contract-pages--sjabloon1 > .a4-page:not(:first-child),
+  .contract-pages > .a4-page:not(:first-child) {
+    page-break-before: always;
+    break-before: page;
+  }
+
+  .contract-pages--sjabloon1 > .a4-page--sjabloon1-main:first-child {
+    min-height: 0 !important;
+    height: auto !important;
+  }
+
+  .contract-pages--sjabloon1 > .a4-page--sjabloon1-main:nth-child(2),
+  .a4-page--flex.a4-page--sjabloon1-main {
+    min-height: 297mm !important;
   }
 
   .a4-page--flex {
@@ -901,11 +916,9 @@ body {
   }
 
   .contract-article,
-  .contract-dash-item,
-  .contract-article__number,
-  .contract-dash-item__marker {
-    break-inside: avoid;
-    page-break-inside: avoid;
+  .contract-dash-item {
+    break-inside: auto;
+    page-break-inside: auto;
   }
 
   .contract-article__number,

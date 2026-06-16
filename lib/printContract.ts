@@ -1,6 +1,7 @@
 export const A4_WIDTH_MM = 210;
 export const A4_HEIGHT_MM = 297;
 export const A4_WIDTH_PX = (A4_WIDTH_MM * 96) / 25.4;
+export const A4_HEIGHT_PX = (A4_HEIGHT_MM * 96) / 25.4;
 
 type StyleValues = Record<string, string>;
 
