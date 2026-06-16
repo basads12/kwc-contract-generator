@@ -4,7 +4,7 @@ import {
   resolveDocumentContent,
   type DocumentContent,
 } from "@/lib/documentContent";
-import { type DocumentRenderContext } from "@/lib/renderDocumentText";
+import { type DocumentRenderContext, normalizeIntroProefperiodeTemplate } from "@/lib/renderDocumentText";
 import { SIJABLOON_1_SLUG } from "@/lib/templateConstants";
 import { Article } from "./shared";
 import EditableDocumentText from "./EditableDocumentText";
@@ -89,6 +89,21 @@ function renderArticleBody(
   );
 }
 
+function shouldRenderArticle(number: number, data: ContractFormData): boolean {
+  if (number === 15 && !data.proefperiodeActief) return false;
+  return true;
+}
+
+function visibleArticleNumbers(
+  articles: DocumentContent["articles"],
+  data: ContractFormData
+): number[] {
+  return Object.keys(articles)
+    .map(Number)
+    .filter((number) => shouldRenderArticle(number, data))
+    .sort((a, b) => a - b);
+}
+
 export default function DocumentContentRenderer({
   data,
   calculations,
@@ -103,16 +118,14 @@ export default function DocumentContentRenderer({
     onContentChange?.(next);
   }
 
-  const articleNumbers = Object.keys(resolved.articles)
-    .map(Number)
-    .sort((a, b) => a - b);
+  const articleNumbers = visibleArticleNumbers(resolved.articles, data);
 
   return (
     <>
       {resolved.intro ? (
         <p className="contract-intro contract-intro--partner">
           <EditableDocumentText
-            template={resolved.intro}
+            template={normalizeIntroProefperiodeTemplate(resolved.intro)}
             context={context}
             editable={editable}
             onTemplateChange={(intro) =>
@@ -157,9 +170,7 @@ export function DocumentContentRendererPage2({
     onContentChange?.(next);
   }
 
-  const articleNumbers = Object.keys(resolved.articles)
-    .map(Number)
-    .sort((a, b) => a - b);
+  const articleNumbers = visibleArticleNumbers(resolved.articles, data);
 
   return (
     <>

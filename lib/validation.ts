@@ -30,6 +30,8 @@ export const contractFormSchema = z.object({
   bovengrens: z.coerce.number(),
   kunstbudget: z.coerce.number(),
   betaaltermijnDagen: z.coerce.number(),
+  proefperiodeActief: z.boolean().default(false),
+  proefperiodeStartdatum: z.string().default(""),
   proefperiodeMaanden: z.coerce.number().default(6),
   naamVertegenwoordigerGalerie: z.string().min(1),
   naamTweedeVertegenwoordigerGalerie: z.string().default("Robert Staal"),

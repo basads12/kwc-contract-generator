@@ -50,9 +50,23 @@ export function buildDocumentPlaceholderMap(
       data.geldigheidsduurKwcMaanden
     ),
     proefperiodeMaanden: formatGeldigheidsduur(data.proefperiodeMaanden),
+    proefperiodeStartdatum: formatDateShort(
+      data.proefperiodeStartdatum || data.ingangsdatum
+    ),
+    proefperiodeIntroZin: data.proefperiodeActief
+      ? ", en gedurende de proefperiode kunt u eenvoudig en zonder kosten terug"
+      : "",
     boete1000: formatCurrency(1000),
     bpMinimum: formatCurrency(25),
   };
+}
+
+export function normalizeIntroProefperiodeTemplate(intro: string): string {
+  if (intro.includes("{{proefperiodeIntroZin}}")) return intro;
+  return intro.replace(
+    /, en gedurende de proefperiode kunt u eenvoudig en zonder kosten terug\./,
+    "{{proefperiodeIntroZin}}."
+  );
 }
 
 export function applyDocumentPlaceholders(

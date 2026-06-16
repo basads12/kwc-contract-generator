@@ -24,6 +24,8 @@ export interface ContractFormData {
   bovengrens: number;
   kunstbudget: number;
   betaaltermijnDagen: number;
+  proefperiodeActief: boolean;
+  proefperiodeStartdatum: string;
   proefperiodeMaanden: number;
   naamVertegenwoordigerGalerie: string;
   naamTweedeVertegenwoordigerGalerie: string;

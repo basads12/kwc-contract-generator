@@ -32,11 +32,13 @@ export const DOCUMENT_PLACEHOLDER_HELP = [
   "{{betaaltermijnDagen}}",
   "{{geldigheidsduurKwcMaanden}}",
   "{{proefperiodeMaanden}}",
+  "{{proefperiodeStartdatum}}",
+  "{{proefperiodeIntroZin}}",
 ].join(", ");
 
 export const SIJABLOON_1_DOCUMENT_CONTENT: DocumentContent = {
   intro:
-    "Hierbij treft u onze overeenkomst aan inzake het concept Kunst-Waardecheques (hierna te noemen \u201cKWC\u201d). Wij hebben deze overeenkomst bewust helder en evenwichtig opgesteld. De actie wordt voor u kosteloos en zonder risico uitgevoerd: de organisatie, de kosten en de afhandeling van eventuele klachten nemen wij volledig voor onze rekening, en gedurende de proefperiode kunt u eenvoudig en zonder kosten terug. Onderstaande afspraken leggen vast hoe wij dit zorgvuldig en met respect voor uw klanten en hun gegevens voor u verzorgen.",
+    "Hierbij treft u onze overeenkomst aan inzake het concept Kunst-Waardecheques (hierna te noemen \u201cKWC\u201d). Wij hebben deze overeenkomst bewust helder en evenwichtig opgesteld. De actie wordt voor u kosteloos en zonder risico uitgevoerd: de organisatie, de kosten en de afhandeling van eventuele klachten nemen wij volledig voor onze rekening{{proefperiodeIntroZin}}. Onderstaande afspraken leggen vast hoe wij dit zorgvuldig en met respect voor uw klanten en hun gegevens voor u verzorgen.",
   articles: {
     "1": {
       body: "U verstrekt aan iedere klant met een besteding boven de {{bestedingsgrens}} een KWC ter waarde van {{waardeKwc}}. Deze KWC kan worden ingewisseld bij Galerie De Kunst van Kunst.",
@@ -81,8 +83,7 @@ export const SIJABLOON_1_DOCUMENT_CONTENT: DocumentContent = {
       body: "Het BP-arrangement wordt kosteloos aangeboden. De samenstelling kan door Galerie De Kunst van Kunst worden aangepast of aangevuld, mits de minimale commerciële waarde van {{bpMinimum}} behouden blijft.",
     },
     "15": {
-      title: "Proefperiode.",
-      body: "Vanaf {{ingangsdatum}} geldt een proefperiode van {{proefperiodeMaanden}}. Gedurende deze proefperiode kan de overeenkomst uitsluitend schriftelijk worden opgezegd indien het aantal gegronde klachten in de proefperiode meer dan 1% bedraagt van het aantal in die periode benaderde klanten. Onder een klacht wordt hierbij uitsluitend verstaan een klacht in de zin van het protocol klachtenafhandeling (Bijlage 2): van een klacht is pas sprake wanneer de klant na afhandeling niet akkoord gaat met de door de galerie aangeboden oplossing.",
+      body: "Vanaf {{proefperiodeStartdatum}} geldt een proefperiode van {{proefperiodeMaanden}}. Gedurende deze proefperiode kan de overeenkomst uitsluitend schriftelijk worden opgezegd indien het aantal gegronde klachten in de proefperiode meer dan 1% bedraagt van het aantal in die periode benaderde klanten. Onder een klacht wordt hierbij uitsluitend verstaan een klacht in de zin van het protocol klachtenafhandeling (Bijlage 2): van een klacht is pas sprake wanneer de klant na afhandeling niet akkoord gaat met de door de galerie aangeboden oplossing.",
     },
   },
   continued: [

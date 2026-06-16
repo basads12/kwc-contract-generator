@@ -3,6 +3,7 @@
 import NumericInput from "@/components/NumericInput";
 import BerekeningenFields from "@/components/BerekeningenPanel";
 import type { ContractFormData } from "@/lib/types";
+import { formatDateShort, formatGeldigheidsduur } from "@/lib/formatters";
 import {
   applyDatumOvereenkomstChange,
   applyIngangsdatumChange,
@@ -57,16 +58,43 @@ export default function ContractForm({ data, onChange }: ContractFormProps) {
   ) {
     const next = { ...data, [key]: value };
     if (key === "datumOvereenkomst") {
+      const dateUpdates = applyDatumOvereenkomstChange(String(value));
+      const syncProefperiodeStart =
+        !data.proefperiodeStartdatum ||
+        data.proefperiodeStartdatum === data.ingangsdatum;
       onChange({
         ...next,
-        ...applyDatumOvereenkomstChange(String(value)),
+        ...dateUpdates,
+        proefperiodeStartdatum: syncProefperiodeStart
+          ? dateUpdates.ingangsdatum
+          : data.proefperiodeStartdatum,
       });
       return;
     }
     if (key === "ingangsdatum") {
+      const previousIngangsdatum = data.ingangsdatum;
+      const nextIngangsdatum = String(value);
+      const syncProefperiodeStart =
+        !data.proefperiodeStartdatum ||
+        data.proefperiodeStartdatum === previousIngangsdatum;
       onChange({
         ...next,
-        ...applyIngangsdatumChange(next, String(value)),
+        proefperiodeStartdatum: syncProefperiodeStart
+          ? nextIngangsdatum
+          : data.proefperiodeStartdatum,
+        ...applyIngangsdatumChange(next, nextIngangsdatum),
+      });
+      return;
+    }
+    if (key === "proefperiodeActief") {
+      const active = Boolean(value);
+      onChange({
+        ...next,
+        proefperiodeActief: active,
+        proefperiodeStartdatum:
+          active && !next.proefperiodeStartdatum
+            ? next.ingangsdatum
+            : next.proefperiodeStartdatum,
       });
       return;
     }
@@ -195,14 +223,60 @@ export default function ContractForm({ data, onChange }: ContractFormProps) {
             onChange={(value) => update("looptijdJaren", value)}
           />
         </FormField>
-        <FormField label="Proefperiode (maanden)">
-          <NumericInput
-            className={inputClass}
-            min={1}
-            value={data.proefperiodeMaanden}
-            onChange={(value) => update("proefperiodeMaanden", value)}
-          />
+      </FormSection>
+
+      <FormSection title="Proefperiode">
+        <FormField label="Proefperiode aan/uit">
+          <label className="flex cursor-pointer items-center gap-2.5">
+            <input
+              type="checkbox"
+              className="h-4 w-4 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-400"
+              checked={data.proefperiodeActief}
+              onChange={(e) => update("proefperiodeActief", e.target.checked)}
+            />
+            <span className="text-sm text-zinc-800">
+              Artikel 15 proefperiode opnemen in contract
+            </span>
+          </label>
         </FormField>
+        {data.proefperiodeActief ? (
+          <>
+            <FormField label="Vanaf datum (artikel 15)">
+              <input
+                type="date"
+                className={inputClass}
+                value={data.proefperiodeStartdatum || data.ingangsdatum}
+                onChange={(e) =>
+                  update("proefperiodeStartdatum", e.target.value)
+                }
+              />
+            </FormField>
+            <FormField label="Proefperiode (maanden)">
+              <NumericInput
+                className={inputClass}
+                min={1}
+                value={data.proefperiodeMaanden}
+                onChange={(value) => update("proefperiodeMaanden", value)}
+              />
+            </FormField>
+            <p className="text-xs leading-relaxed text-zinc-500">
+              Vanaf{" "}
+              {formatDateShort(
+                data.proefperiodeStartdatum || data.ingangsdatum
+              ) || "—"}{" "}
+              geldt een proefperiode van{" "}
+              {formatGeldigheidsduur(data.proefperiodeMaanden || 6)}. Gedurende
+              deze proefperiode kan de overeenkomst uitsluitend schriftelijk
+              worden opgezegd indien het aantal gegronde klachten in de
+              proefperiode meer dan 1% bedraagt van het aantal in die periode
+              benaderde klanten. Onder een klacht wordt hierbij uitsluitend
+              verstaan een klacht in de zin van het protocol klachtenafhandeling
+              (Bijlage 2): van een klacht is pas sprake wanneer de klant na
+              afhandeling niet akkoord gaat met de door de galerie aangeboden
+              oplossing.
+            </p>
+          </>
+        ) : null}
       </FormSection>
 
       <FormSection title="Berekeningen">
